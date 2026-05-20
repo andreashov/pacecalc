@@ -167,13 +167,13 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .adj-btn:active{transform:scale(.93)}
 
 /* FINISH TIMES */
-.scroll-area{position:relative;z-index:10;background:var(--bg);transition:background .3s;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.scroll-area{position:relative;z-index:10;background:var(--bg);transition:background .3s;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;}
 .scroll-area::-webkit-scrollbar{display:none}
 .ft-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px}
 .ft-title{font-size:15px;font-weight:700;color:var(--txt)}
 .ft-edit-btn{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);background:var(--card2);border:1px solid var(--brd);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
 .ft-edit-btn:hover{color:var(--txt);border-color:var(--dim)}
-.dist-list{padding:0 14px 220px}
+.dist-list{padding:0 14px}
 .dl-wrap{background:var(--dl-bg);border-radius:16px;overflow:hidden;margin-bottom:28px;border:1px solid var(--brd);box-shadow:0 2px 12px var(--shadow);transition:var(--tr)}
 .dr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--row-brd);transition:var(--tr)}
 .dr:last-child{border-bottom:none}
@@ -538,6 +538,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
   </div>
   <div class="dist-list">
     <div class="dl-wrap" id="distListWrap"></div>
+  <div id="cardSpacer"></div>
   </div>
 </div>
 
@@ -1240,6 +1241,22 @@ function applyCalcPace(){
   closeSheet('calcOverlay');
   showToast(lang === 'no' ? '✓ Tempo oppdatert' : '✓ Pace applied');
 }
+
+// ═══ DYNAMIC SCROLL SPACER ═══════════════════
+// Sets spacer height to exactly match the fixed pace card
+// so the scroll area never has excess empty space
+function updateSpacer(){
+  const cards   = document.querySelector('.cards');
+  const spacer  = document.getElementById('cardSpacer');
+  if(cards && spacer){
+    spacer.style.height = cards.offsetHeight + 'px';
+  }
+}
+updateSpacer();
+window.addEventListener('resize', updateSpacer);
+// Also update after theme/lang changes (card height may shift)
+const _origApplyTheme = applyTheme;
+applyTheme = function(){ _origApplyTheme.apply(this,arguments); setTimeout(updateSpacer,400); };
 
 // ═══ INIT ═════════════════════════════════════
 // Apply all restored state to DOM
