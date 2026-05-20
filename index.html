@@ -120,7 +120,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
   bottom:0; left:0; right:0;
   z-index:20;
   padding:8px 12px;
-  padding-bottom:max(16px, env(safe-area-inset-bottom));
+  padding-bottom:max(32px, calc(env(safe-area-inset-bottom) + 16px));
   background:transparent;
   /* No border, no shadow — the vcard inside handles its own styling */
 }
@@ -169,12 +169,12 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 /* FINISH TIMES */
 .scroll-area{position:relative;z-index:10;background:var(--bg);transition:background .3s;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;}
 .scroll-area::-webkit-scrollbar{display:none}
-.ft-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px}
+.ft-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px}
 .ft-title{font-size:15px;font-weight:700;color:var(--txt)}
 .ft-edit-btn{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);background:var(--card2);border:1px solid var(--brd);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
 .ft-edit-btn:hover{color:var(--txt);border-color:var(--dim)}
 .dist-list{padding:0 14px}
-.dl-wrap{background:var(--dl-bg);border-radius:20px;overflow:hidden;margin-bottom:28px;border:1px solid var(--brd);box-shadow:0 2px 12px var(--shadow);transition:var(--tr)}
+.dl-wrap{background:var(--dl-bg);border-radius:20px;overflow:hidden;margin-bottom:0;border:1px solid var(--brd);box-shadow:0 2px 12px var(--shadow);transition:var(--tr)}
 .dr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--row-brd);transition:var(--tr)}
 .dr:last-child{border-bottom:none}
 .dr-name{font-size:15px;font-weight:500;color:var(--txt2)}
@@ -395,7 +395,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 /* ═══ CALC BANNER ═══ */
 .calc-banner{
   display:flex;align-items:center;gap:14px;
-  margin:0 14px 14px;padding:16px 18px;
+  margin:0 14px 8px;padding:16px 18px;
   background:linear-gradient(135deg,rgba(232,21,42,0.15) 0%,rgba(0,112,243,0.15) 100%);
   border:1px solid rgba(232,21,42,0.25);
   border-radius:22px;cursor:pointer;
@@ -1245,13 +1245,20 @@ function applyCalcPace(){
 function updateSpacer(){
   const cards   = document.querySelector('.cards');
   const spacer  = document.getElementById('cardSpacer');
-  if(cards && spacer){
-    // Add a small gap above the card
-    spacer.style.height = (cards.offsetHeight + 8) + 'px';
-  }
+  const vcard   = document.querySelector('.vcard');
+  if(!cards || !spacer) return;
+  // Spacer = height from bottom of screen to top of the vcard
+  // so content sits flush with the card top, not the container bottom
+  const vcardRect  = vcard ? vcard.getBoundingClientRect() : null;
+  const cardHeight = vcardRect
+    ? (window.innerHeight - vcardRect.top)   // actual overlap with viewport
+    : cards.offsetHeight;
+  spacer.style.height = cardHeight + 'px';
 }
 updateSpacer();
 window.addEventListener('resize', updateSpacer);
+// Re-run after full render to get accurate vcard position
+requestAnimationFrame(() => requestAnimationFrame(updateSpacer));
 // Also update after theme/lang changes (card height may shift)
 const _origApplyTheme = applyTheme;
 applyTheme = function(){ _origApplyTheme.apply(this,arguments); setTimeout(updateSpacer,400); };
