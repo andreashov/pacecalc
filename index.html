@@ -22,7 +22,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--red:#e8152a;--blue:#0070f3;--tr:all .35s cubic-bezier(0.4,0,0.2,1)}
+:root{
+  --red:#e8152a; --blue:#0070f3;
+  --green:#a8e063; /* logo lime green — for subtle accents */
+  --tr:all .35s cubic-bezier(0.4,0,0.2,1);
+}
 
 [data-theme="dark"]{
   --bg:#08080f;      /* single dark bg used everywhere */
@@ -470,6 +474,77 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
   transition:var(--tr);align-self:center;
 }
 .calc-clear-btn:hover{color:var(--red);border-color:var(--red)}
+
+/* ═══ GREEN ACCENT (logo colour) ═══ */
+
+/* Subtle green glow on the big pace number */
+[data-theme="dark"] .vc-number {
+  text-shadow: 0 0 60px rgba(168,224,99,0.07);
+}
+
+/* Green gradient underline on the logo text */
+.logo em {
+  background: linear-gradient(135deg, #c8f050, #a8e063);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle green dot on the TEMPO badge */
+.vc-label::before {
+  content: '';
+  display: inline-block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 5px;
+  vertical-align: middle;
+  opacity: 0.8;
+}
+
+/* Green tint on calc banner icon */
+.calc-banner-icon { background: linear-gradient(135deg,var(--red),rgba(168,224,99,0.6)); }
+
+/* Green progress pip on bar when at fastest end */
+.vc-bar-fill { box-shadow: 0 0 8px rgba(168,224,99,0.3); }
+
+/* Thin green accent line under header */
+header {
+  box-shadow: 0 1px 0 rgba(168,224,99,0.08);
+}
+
+/* Green active state on dist preset buttons */
+.calc-pre.active {
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  background: rgba(168,224,99,0.08) !important;
+}
+
+/* ═══ LANGUAGE — PAGE FLIP ═══ */
+/* Flag spins when language toggles */
+@keyframes flagSpin {
+  0%   { transform: rotateY(0deg)   scale(1);    }
+  35%  { transform: rotateY(90deg)  scale(0.75); }
+  65%  { transform: rotateY(-90deg) scale(0.75); }
+  100% { transform: rotateY(0deg)   scale(1);    }
+}
+.flag-flip { animation: flagSpin 0.48s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* Give html perspective so child rotateY looks 3-D */
+html { perspective: 1400px; perspective-origin: center 40%; }
+
+/* ═══ DARK/LIGHT PARTICLES ═══ */
+.theme-particle {
+  position: fixed; border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  animation: particleFade 0.8s ease-out forwards;
+}
+@keyframes particleFade {
+  0%   { opacity: 0.9; transform: scale(0) translate(0,0); }
+  60%  { opacity: 0.6; }
+  100% { opacity: 0;   transform: scale(1) translate(var(--tx), var(--ty)); }
+}
+
 </style>
 </head>
 <body>
@@ -830,53 +905,78 @@ function applyTheme(t,save=true){
   document.head.appendChild(mc);
   if(save)saveData({theme});
 }
+function spawnParticles(x, y, theme){
+  const isDark = theme === 'dark';
+  const count  = 16;
+  for(let i=0; i<count; i++){
+    const p = document.createElement('div');
+    p.className = 'theme-particle';
+    const angle  = (i / count) * Math.PI * 2;
+    const dist   = 40 + Math.random() * 80;
+    const size   = 3 + Math.random() * 6;
+    const tx     = Math.cos(angle) * dist;
+    const ty     = Math.sin(angle) * dist;
+    const color  = isDark
+      ? `hsl(${220 + Math.random()*40},80%,${60+Math.random()*30}%)`  // blue/purple stars
+      : `hsl(${35  + Math.random()*30},90%,${55+Math.random()*20}%)`;  // golden sun sparks
+    Object.assign(p.style,{
+      left: x-size/2+'px', top: y-size/2+'px',
+      width: size+'px', height: size+'px',
+      background: color,
+      '--tx': tx+'px', '--ty': ty+'px',
+      animationDelay: (Math.random()*0.15)+'s',
+      animationDuration: (0.6+Math.random()*0.4)+'s',
+    });
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 1200);
+  }
+}
+
 function toggleTheme(){
   const newTheme = theme==='dark'?'light':'dark';
-  const btn = document.getElementById('themeBtn');
+  const btn  = document.getElementById('themeBtn');
   const rect = btn.getBoundingClientRect();
-  const x = rect.left + rect.width  / 2;
-  const y = rect.top  + rect.height / 2;
-  const r = Math.hypot(
-    Math.max(x, window.innerWidth  - x),
-    Math.max(y, window.innerHeight - y)
-  ) * 1.05; // slight overshoot so edge pixels are covered
+  const x    = rect.left + rect.width  / 2;
+  const y    = rect.top  + rect.height / 2;
+  const r    = Math.hypot(Math.max(x,window.innerWidth-x), Math.max(y,window.innerHeight-y)) * 1.05;
 
-  // Bounce the button
+  // Button bounce
   btn.animate(
-    [{transform:'scale(1)'},{transform:'scale(0.82)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],
-    {duration:420, easing:'cubic-bezier(0.34,1.56,0.64,1)'}
+    [{transform:'scale(1)'},{transform:'scale(0.78)'},{transform:'scale(1.15)'},{transform:'scale(1)'}],
+    {duration:460, easing:'cubic-bezier(0.34,1.56,0.64,1)'}
   );
 
-  // Ripple overlay — colour of the destination theme
+  // Spawn particles at button position
+  spawnParticles(x, y, newTheme);
+
+  // Ripple colour — richer gradient for drama
+  const rippleColor = newTheme==='dark' ? '#08080f' : '#f2f2f7';
   const ripple = document.createElement('div');
   Object.assign(ripple.style,{
     position:'fixed', inset:'0', zIndex:'9999', pointerEvents:'none',
-    background: newTheme==='dark'?'#08080f':'#f4f4f8',
-    clipPath: `circle(0px at ${x}px ${y}px)`,
-    willChange: 'clip-path, opacity',
-    transform: 'translateZ(0)',
+    background: rippleColor,
+    clipPath:`circle(0px at ${x}px ${y}px)`,
+    willChange:'clip-path,opacity',
+    transform:'translateZ(0)',
   });
   document.body.appendChild(ripple);
 
-  // ── Phase 1: expand circle ────────────────────────────
-  const expandAnim = ripple.animate([
-    {clipPath:`circle(0px at ${x}px ${y}px)`},
-    {clipPath:`circle(${r}px at ${x}px ${y}px)`}
-  ],{
-    duration: 620,
-    easing: 'cubic-bezier(0.65, 0, 0.35, 1)', // smooth ease-in-out
-    fill: 'forwards'
-  });
+  // Phase 1: dramatic expand with overshoot easing
+  const expand = ripple.animate([
+    {clipPath:`circle(0px at ${x}px ${y}px)`, opacity:0.95},
+    {clipPath:`circle(${r*0.5}px at ${x}px ${y}px)`, opacity:1, offset:0.4},
+    {clipPath:`circle(${r}px at ${x}px ${y}px)`, opacity:1},
+  ],{duration:680, easing:'cubic-bezier(0.55,0,0.1,1)', fill:'forwards'});
 
-  // Apply theme just before expand finishes (still covered — invisible swap)
-  const applyAt = 560;
-  setTimeout(()=> applyTheme(newTheme), applyAt);
+  // Apply theme at 75% of expand
+  setTimeout(()=> applyTheme(newTheme), 510);
 
-  // ── Phase 2: fade ripple away, revealing new theme ────
-  expandAnim.onfinish = () => {
+  // Phase 2: smooth fade reveal + second particle burst
+  expand.onfinish = ()=>{
+    spawnParticles(x, y, newTheme);
     ripple.animate(
       [{opacity:1},{opacity:0}],
-      {duration:480, easing:'cubic-bezier(0.4,0,0.2,1)', fill:'forwards'}
+      {duration:520, easing:'cubic-bezier(0.4,0,0.2,1)', fill:'forwards'}
     ).onfinish = ()=> ripple.remove();
   };
 }
@@ -890,7 +990,57 @@ function applyLang(l,save=true){
   buildUserSheet();
   if(save)saveData({lang});
 }
-function toggleLang(){applyLang(lang==='no'?'en':'no');}
+function toggleLang(){
+  const newLang = lang==='no'?'en':'no';
+
+  // Spin the flag button
+  const lb = document.getElementById('langBtn');
+  if(lb){ lb.classList.add('flag-flip'); setTimeout(()=>lb.classList.remove('flag-flip'),500); }
+
+  // Elements that participate in the page-flip
+  // (not the fixed cards — it stays put, which looks anchored and cool)
+  const header    = document.querySelector('header');
+  const scrollEl  = document.querySelector('.scroll-area');
+  const targets   = [header, scrollEl].filter(Boolean);
+
+  // ── Phase 1: flip the page away to the LEFT ──────────
+  // Uses the Web Animations API so we can chain via .finished Promise
+  const EASE_OUT = 'cubic-bezier(0.55, 0, 0.9, 0.5)';
+  const EASE_IN  = 'cubic-bezier(0.1, 0.5, 0.45, 1)';
+
+  const outs = targets.map((el, i) =>
+    el.animate([
+      { transform: 'rotateY(0deg)    translateZ(0)',    opacity: 1   },
+      { transform: 'rotateY(-90deg)  translateZ(-80px)', opacity: 0.1 }
+    ], {
+      duration: 320,
+      delay:    i * 20,          // slight stagger header vs content
+      easing:   EASE_OUT,
+      fill:     'forwards'
+    })
+  );
+
+  // ── When all "out" animations finish: swap language, flip back in ──
+  Promise.all(outs.map(a => a.finished)).then(() => {
+    applyLang(newLang);
+
+    targets.forEach((el, i) => {
+      // Start from the RIGHT side (opposite side of the flip)
+      const anim = el.animate([
+        { transform: 'rotateY(90deg)  translateZ(-80px)', opacity: 0.1 },
+        { transform: 'rotateY(0deg)   translateZ(0)',    opacity: 1   }
+      ], {
+        duration: 360,
+        delay:    i * 20,
+        easing:   EASE_IN,
+        fill:     'forwards'
+      });
+
+      // Clean up inline styles when done
+      anim.onfinish = () => { el.style.transform = ''; el.style.opacity = ''; };
+    });
+  });
+}
 
 // ═══ RANGES ═══════════════════════════════════
 const PACE_MIN=120,PACE_MAX=480; // 2:00 → 8:00 min/km
