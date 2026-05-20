@@ -611,12 +611,12 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
       <div class="calc-dist-presets">
         <button class="calc-pre" onclick="setCalcDist(5,0)">5 km</button>
         <button class="calc-pre" onclick="setCalcDist(10,0)">10 km</button>
-        <button class="calc-pre" onclick="setCalcDist(21,97.5)">Halvmaraton</button>
-        <button class="calc-pre" onclick="setCalcDist(42,195)">Maraton</button>
+        <button class="calc-pre" onclick="setCalcDist(21,97)" data-i18n="half">Halvmaraton</button>
+        <button class="calc-pre" onclick="setCalcDist(42,195)" data-i18n="marathon">Maraton</button>
       </div>
       <div class="calc-dist-boxes">
         <div class="calc-dist-field">
-          <input class="calc-time-inp" id="calcKm" type="text" inputmode="numeric" maxlength="3" placeholder="10">
+          <input class="calc-time-inp" id="calcKm" type="text" inputmode="numeric" maxlength="2" placeholder="10">
           <span class="calc-field-lbl">km</span>
         </div>
         <span style="font-size:16px;color:var(--dim);flex-shrink:0;padding:0 2px">+</span>
@@ -1161,7 +1161,7 @@ function setupCalcInputs(){
       // Only allow digits
       inp.value = inp.value.replace(/[^0-9]/g,'');
       // Max digits: 3 for km/meters, 2 for time fields
-      const maxD = (id==='calcKm'||id==='calcMeters') ? 3 : 2;
+      const maxD = (id==='calcMeters') ? 3 : 2;
       if(inp.value.length > maxD) inp.value = inp.value.slice(0,maxD);
       // Auto-advance to next field when max digits reached
       if(inp.value.length === maxD && i < fields.length - 1){
@@ -1192,11 +1192,10 @@ function clearCalcDist(){
 }
 
 function clearCalcTime(){
-  ['calcH','calcM','calcS','calcKm','calcMeters'].forEach(id => {
+  ['calcH','calcM','calcS'].forEach(id => {
     document.getElementById(id).value = '';
   });
-  document.querySelectorAll('.calc-pre').forEach(b=>b.classList.remove('active'));
-  document.getElementById('calcKm').focus();
+  document.getElementById('calcH').focus();
   runCalc();
 }
 
