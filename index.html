@@ -115,14 +115,14 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
   position:fixed;
   bottom:0; left:0; right:0;
   z-index:20;
-  padding:12px 14px;
-  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  padding:10px 14px;
+  padding-bottom:max(16px, calc(10px + env(safe-area-inset-bottom)));
   background:var(--bg);
   border-top:1px solid var(--brd);
-  box-shadow:0 -12px 40px var(--shadow);
+  box-shadow:0 -16px 48px var(--shadow);
   transition:background .35s cubic-bezier(0.4,0,0.2,1), border-color .35s;
 }
-.vcard{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--brd);background:var(--card);padding:18px 18px 14px;user-select:none;touch-action:pan-y;box-shadow:0 2px 14px var(--shadow);transition:var(--tr);cursor:ew-resize}
+.vcard{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--brd);background:var(--card);padding:14px 16px 12px;user-select:none;touch-action:pan-y;box-shadow:0 2px 14px var(--shadow);transition:var(--tr);cursor:ew-resize}
 .vcard::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;border-radius:22px}
 .vcard.pace::before{background:radial-gradient(ellipse 130% 130% at 20% 50%,var(--glow-r) 0%,transparent 65%)}
 .vcard.speed::before{background:radial-gradient(ellipse 130% 130% at 80% 50%,var(--glow-b) 0%,transparent 65%)}
@@ -139,22 +139,27 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .hint-arr{width:17px;height:17px;border-radius:5px;border:1px solid var(--brd);background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--dim)}
 .hold-hint{font-size:10px;color:var(--dim);margin-top:3px;letter-spacing:.2px;opacity:.7}
 
-.vc-number{font-size:70px;font-weight:900;line-height:1;letter-spacing:-3px;color:var(--num);font-variant-numeric:tabular-nums;transition:transform .15s cubic-bezier(0.34,1.56,0.64,1),color .3s;display:inline-block}
+.vc-number{font-size:60px;font-weight:900;line-height:1;letter-spacing:-3px;color:var(--num);font-variant-numeric:tabular-nums;transition:transform .15s cubic-bezier(0.34,1.56,0.64,1),color .3s;display:inline-block}
 .vc-number.bump{transform:scale(1.05)}
 .vc-number.bump-down{transform:scale(0.96)}
 
 .vc-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+/* Pace number + km/t side by side */
+.vc-num-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.vc-kmh-aside{text-align:right;flex-shrink:0;align-self:center}
+.vc-kmh-val{font-size:32px;font-weight:700;color:var(--txt2);font-variant-numeric:tabular-nums;letter-spacing:-1px;line-height:1;transition:color .3s}
+.vc-kmh-unit{font-size:11px;color:var(--dim);font-weight:500;margin-top:3px}
 .vc-unit{font-size:13px;color:var(--dim);font-weight:500}
 .live-badge{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;opacity:0;transition:opacity .3s;background:rgba(0,112,243,.1);color:#4a9eff;border:1px solid rgba(0,112,243,.2)}
 .live-badge.visible{opacity:1}
 
-.vc-bar{height:3px;background:var(--bar-bg);border-radius:2px;margin-top:10px;overflow:hidden;display:flex;}
+.vc-bar{height:3px;background:var(--bar-bg);border-radius:2px;margin-top:8px;overflow:hidden;display:flex;}
 .vc-bar-fill{height:100%;border-radius:2px;width:0%;transition:width .06s linear}
 /* Pace bar fills from the right (fast = right side) matching swipe-left-to-go-faster */
 .vcard.pace  .vc-bar-fill{background:linear-gradient(to left,rgba(232,21,42,.5),var(--red));margin-left:auto}
 .vcard.speed .vc-bar-fill{background:linear-gradient(to right,rgba(0,112,243,.5),var(--blue))}
 
-.vc-adjust{display:flex;gap:5px;margin-top:8px}
+.vc-adjust{display:flex;gap:5px;margin-top:6px}
 .adj-btn{flex:1;padding:8px 4px;border-radius:11px;border:1px solid var(--adj-brd);background:var(--adj-bg);color:var(--adj-txt);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr),transform .1s;min-height:38px;display:flex;align-items:center;justify-content:center}
 .adj-btn:hover{background:var(--card2);color:var(--txt)}
 .adj-btn:active{transform:scale(.93)}
