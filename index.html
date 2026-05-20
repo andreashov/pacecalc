@@ -124,7 +124,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
   box-shadow:0 -16px 48px var(--shadow);
   transition:background .35s cubic-bezier(0.4,0,0.2,1), border-color .35s;
 }
-.vcard{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--brd);background:var(--card);padding:14px 16px 12px;user-select:none;touch-action:pan-y;box-shadow:0 2px 14px var(--shadow);transition:var(--tr);cursor:ew-resize}
+.vcard{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--brd);background:var(--card);padding:14px 16px 12px;user-select:none;touch-action:pan-y;box-shadow:0 2px 14px var(--shadow);transition:var(--tr);cursor:ew-resize}
 .vcard::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;border-radius:22px}
 .vcard.pace::before{background:radial-gradient(ellipse 130% 130% at 20% 50%,var(--glow-r) 0%,transparent 65%)}
 .vcard.speed::before{background:radial-gradient(ellipse 130% 130% at 80% 50%,var(--glow-b) 0%,transparent 65%)}
@@ -174,7 +174,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .ft-edit-btn{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);background:var(--card2);border:1px solid var(--brd);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
 .ft-edit-btn:hover{color:var(--txt);border-color:var(--dim)}
 .dist-list{padding:0 14px}
-.dl-wrap{background:var(--dl-bg);border-radius:16px;overflow:hidden;margin-bottom:28px;border:1px solid var(--brd);box-shadow:0 2px 12px var(--shadow);transition:var(--tr)}
+.dl-wrap{background:var(--dl-bg);border-radius:20px;overflow:hidden;margin-bottom:28px;border:1px solid var(--brd);box-shadow:0 2px 12px var(--shadow);transition:var(--tr)}
 .dr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--row-brd);transition:var(--tr)}
 .dr:last-child{border-bottom:none}
 .dr-name{font-size:15px;font-weight:500;color:var(--txt2)}
@@ -186,7 +186,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 /* BOTTOM SHEETS */
 .overlay{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
 .overlay.show{opacity:1;pointer-events:auto}
-.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;border:1px solid var(--brd);border-bottom:none;transition:background .3s,border-color .3s;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box}
+.sheet{background:var(--card);border-radius:32px 32px 0 0;width:100%;max-width:430px;border:1px solid var(--brd);border-bottom:none;transition:background .3s,border-color .3s;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box}
 @keyframes up{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
 .sheet-hd{padding:16px 20px 0;flex-shrink:0;width:100%;box-sizing:border-box;overflow:hidden}
 .handle{width:36px;height:4px;background:var(--brd);border-radius:2px;margin:0 auto 18px}
@@ -210,21 +210,21 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .input-cancel{width:100%;padding:13px;background:transparent;border:1px solid var(--brd);border-radius:14px;color:var(--dim);font-size:14px;cursor:pointer;font-family:'Inter',sans-serif}
 
 /* Auth / settings elements */
-.auth-btn{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border-radius:13px;border:1px solid var(--brd);background:var(--card2);color:var(--txt);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px;font-family:'Inter',sans-serif;transition:var(--tr);min-height:52px}
+.auth-btn{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border-radius:17px;border:1px solid var(--brd);background:var(--card2);color:var(--txt);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px;font-family:'Inter',sans-serif;transition:var(--tr);min-height:52px}
 .auth-btn:hover{border-color:var(--dim)}
 .auth-btn svg{width:20px;height:20px;flex-shrink:0}
-.sheet-close{width:100%;padding:13px;background:transparent;border:1px solid var(--brd);border-radius:13px;color:var(--dim);font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px;min-height:48px;transition:var(--tr)}
-.profile-row{display:flex;align-items:center;gap:14px;padding:14px;background:var(--card2);border-radius:13px;border:1px solid var(--brd);margin-bottom:14px;transition:var(--tr)}
+.sheet-close{width:100%;padding:13px;background:transparent;border:1px solid var(--brd);border-radius:17px;color:var(--dim);font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px;min-height:48px;transition:var(--tr)}
+.profile-row{display:flex;align-items:center;gap:14px;padding:14px;background:var(--card2);border-radius:17px;border:1px solid var(--brd);margin-bottom:14px;transition:var(--tr)}
 .pav{width:46px;height:46px;border-radius:50%;background:var(--dim2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--txt);font-size:18px;flex-shrink:0;overflow:hidden}
 .pav img{width:100%;height:100%;object-fit:cover}
 .pn{font-weight:600;font-size:15px;color:var(--txt)}
 .pe{font-size:12px;color:var(--dim);margin-top:2px}
-.signout{display:block;width:100%;padding:13px;background:transparent;border:1px solid rgba(232,21,42,.3);border-radius:13px;color:#ff4d6d;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;min-height:48px;margin-top:4px}
+.signout{display:block;width:100%;padding:13px;background:transparent;border:1px solid rgba(232,21,42,.3);border-radius:17px;color:#ff4d6d;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;min-height:48px;margin-top:4px}
 .srow{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--row-brd)}
 .srow:last-child{border-bottom:none}
 .srow-label{font-size:15px;font-weight:500;color:var(--txt)}
 .seg-ctrl{display:flex;background:var(--card2);border-radius:10px;padding:3px;gap:3px;border:1px solid var(--brd)}
-.seg{padding:7px 14px;border-radius:8px;border:none;background:transparent;color:var(--dim);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr);min-height:36px}
+.seg{padding:7px 14px;border-radius:12px;border:none;background:transparent;color:var(--dim);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr);min-height:36px}
 .seg.active{background:var(--card);color:var(--txt);border:1px solid var(--brd);box-shadow:0 1px 4px var(--shadow)}
 .tog{position:relative;width:44px;height:26px;flex-shrink:0}
 .tog input{display:none}
@@ -332,7 +332,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 
 /* Buttons — rounder, more tactile */
 .adj-btn {
-  border-radius: 14px;
+  border-radius: 16px;
   font-size: 12px;
   letter-spacing: 0.3px;
 }
@@ -358,7 +358,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .ft-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
 
 /* Edit button — more refined */
-.ft-edit-btn { border-radius: 10px; font-size: 11px; letter-spacing: 1.2px; }
+.ft-edit-btn { border-radius: 14px; font-size: 11px; letter-spacing: 1.2px; }
 [data-theme="dark"]  .ft-edit-btn { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); }
 [data-theme="light"] .ft-edit-btn { background: rgba(0,0,0,0.04); }
 
@@ -383,7 +383,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .pace-field-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
 .pace-field-inp{
   width:100%;text-align:center;
-  background:var(--card2);border:2px solid var(--brd);border-radius:16px;
+  background:var(--card2);border:2px solid var(--brd);border-radius:20px;
   padding:16px 8px;font-size:52px;font-weight:700;
   color:var(--txt);font-family:'Inter',sans-serif;
   outline:none;font-variant-numeric:tabular-nums;
@@ -400,7 +400,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
   margin:0 14px 14px;padding:16px 18px;
   background:linear-gradient(135deg,rgba(232,21,42,0.15) 0%,rgba(0,112,243,0.15) 100%);
   border:1px solid rgba(232,21,42,0.25);
-  border-radius:18px;cursor:pointer;
+  border-radius:22px;cursor:pointer;
   box-shadow:0 4px 20px rgba(232,21,42,0.10);
   transition:var(--tr);position:relative;overflow:hidden;
 }
@@ -444,28 +444,28 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 }
 .calc-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
 .calc-dist-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.calc-pre{padding:8px 14px;border-radius:20px;border:1px solid var(--brd);background:var(--card2);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
+.calc-pre{padding:8px 14px;border-radius:22px;border:1px solid var(--brd);background:var(--card2);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
 .calc-pre:hover,.calc-pre.active{border-color:var(--red);color:var(--red);background:rgba(232,21,42,0.08)}
-.calc-dist-row{display:flex;align-items:center;background:var(--card2);border:1.5px solid var(--brd);border-radius:14px;padding:4px 16px 4px 4px;transition:border-color .2s;margin-bottom:4px}
+.calc-dist-row{display:flex;align-items:center;background:var(--card2);border:1.5px solid var(--brd);border-radius:18px;padding:4px 16px 4px 4px;transition:border-color .2s;margin-bottom:4px}
 .calc-dist-row:focus-within{border-color:var(--red)}
 .calc-dist-inp{flex:1;background:none;border:none;outline:none;font-size:32px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;padding:8px 12px;font-variant-numeric:tabular-nums}
 .calc-dist-inp::placeholder{color:var(--dim2)}
 .calc-dist-unit{font-size:14px;color:var(--dim);font-weight:600}
 .calc-time-row{display:flex;align-items:center;gap:4px;margin-bottom:6px;width:100%;box-sizing:border-box;overflow:hidden}
-.calc-time-inp{flex:1;min-width:0;max-width:100%;box-sizing:border-box;background:var(--card2);border:1.5px solid var(--brd);border-radius:12px;padding:10px 4px;text-align:center;font-size:26px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;font-variant-numeric:tabular-nums}
+.calc-time-inp{flex:1;min-width:0;max-width:100%;box-sizing:border-box;background:var(--card2);border:1.5px solid var(--brd);border-radius:16px;padding:10px 4px;text-align:center;font-size:26px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;font-variant-numeric:tabular-nums}
 .calc-time-inp:focus{border-color:var(--red)}
 .calc-time-inp::placeholder{color:var(--dim2)}
 .calc-sep{font-size:28px;font-weight:700;color:var(--dim);flex-shrink:0}
 .calc-hint{font-size:11px;color:var(--dim);text-align:center;letter-spacing:.5px;margin-bottom:16px}
-.calc-result{background:linear-gradient(135deg,rgba(232,21,42,0.08),rgba(0,112,243,0.08));border:1px solid rgba(232,21,42,0.2);border-radius:18px;padding:20px;margin-bottom:8px}
+.calc-result{background:linear-gradient(135deg,rgba(232,21,42,0.08),rgba(0,112,243,0.08));border:1px solid rgba(232,21,42,0.2);border-radius:22px;padding:20px;margin-bottom:8px}
 .calc-res-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .calc-res-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
 .calc-res-val{font-size:44px;font-weight:900;letter-spacing:-2px;color:var(--txt);font-variant-numeric:tabular-nums;line-height:1}
 .calc-res-unit{font-size:11px;color:var(--dim);margin-top:4px}
-.calc-apply-btn{width:100%;padding:14px;border-radius:13px;border:none;background:var(--red);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .2s}
+.calc-apply-btn{width:100%;padding:14px;border-radius:17px;border:none;background:var(--red);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .2s}
 .calc-apply-btn:hover{opacity:0.85}
 .calc-clear-btn{
-  flex-shrink:0;width:36px;height:36px;border-radius:10px;
+  flex-shrink:0;width:36px;height:36px;border-radius:14px;
   border:1px solid var(--brd);background:var(--card2);
   color:var(--dim);font-size:14px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
