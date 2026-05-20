@@ -182,9 +182,9 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .dr-arr{color:var(--dim2);font-size:14px}
 
 /* BOTTOM SHEETS */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);align-items:flex-end;justify-content:center}
-.overlay.show{display:flex}
-.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;border:1px solid var(--brd);border-bottom:none;animation:up .3s cubic-bezier(.22,1,.36,1);transition:background .3s,border-color .3s;max-height:90vh;display:flex;flex-direction:column}
+.overlay{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.overlay.show{opacity:1;pointer-events:auto}
+.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;border:1px solid var(--brd);border-bottom:none;transition:background .3s,border-color .3s;max-height:90vh;display:flex;flex-direction:column}
 @keyframes up{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
 .sheet-hd{padding:16px 20px 0;flex-shrink:0}
 .handle{width:36px;height:4px;background:var(--brd);border-radius:2px;margin:0 auto 18px}
@@ -295,6 +295,84 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 
 .toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);color:var(--txt);padding:11px 20px;border-radius:30px;border:1px solid var(--brd);font-size:14px;z-index:300;transition:all .3s;opacity:0;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px var(--shadow)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ═══ PREMIUM ENHANCEMENTS ═══ */
+
+/* Richer card backgrounds with subtle depth gradient */
+[data-theme="dark"]  .vcard { background: linear-gradient(150deg, #161626 0%, #0f0f1c 100%); }
+[data-theme="light"] .vcard { background: linear-gradient(150deg, #ffffff 0%, #f8f8fd 100%); }
+
+/* Bottom panel — glass effect */
+[data-theme="dark"]  .cards { background: rgba(10,10,20,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.10); }
+[data-theme="light"] .cards { background: rgba(248,248,252,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(0,0,0,0.08); }
+
+/* Glowing progress bar */
+.vcard.pace .vc-bar-fill { box-shadow: 0 0 12px rgba(232,21,42,0.7), 0 0 4px rgba(232,21,42,0.4); }
+
+/* TEMPO label — pill badge */
+.vc-label {
+  font-size: 9px; letter-spacing: 3px;
+  padding: 3px 8px; border-radius: 20px;
+}
+[data-theme="dark"]  .vcard.pace .vc-label { background: rgba(232,21,42,0.15); color: #ff6b7a; }
+[data-theme="light"] .vcard.pace .vc-label { background: rgba(232,21,42,0.10); color: var(--red); }
+
+/* Big number — tighter, crisper */
+.vc-number { letter-spacing: -4px; }
+
+/* km/t secondary value — more stylish */
+.vc-kmh-val {
+  font-size: 30px; font-weight: 700; letter-spacing: -1.5px;
+}
+[data-theme="dark"]  .vc-kmh-val { color: rgba(255,255,255,0.45); }
+[data-theme="light"] .vc-kmh-val { color: rgba(0,0,0,0.35); }
+.vc-kmh-unit { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* Buttons — rounder, more tactile */
+.adj-btn {
+  border-radius: 14px;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+[data-theme="dark"]  .adj-btn { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); }
+[data-theme="light"] .adj-btn { background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.09); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.adj-btn:active { transform: scale(0.90); }
+
+/* Distance rows — bolder times, better name style */
+.dr-name { font-size: 15px; font-weight: 500; }
+.dr-time { font-size: 17px; font-weight: 700; letter-spacing: -0.5px; }
+[data-theme="dark"]  .dr-time { color: #ffffff; }
+[data-theme="light"] .dr-time { color: #0a0a18; }
+
+/* Finish Times card — depth */
+[data-theme="dark"]  .dl-wrap { background: linear-gradient(160deg, #111120 0%, #0c0c18 100%); border-color: rgba(255,255,255,0.07); }
+[data-theme="light"] .dl-wrap { background: #ffffff; box-shadow: 0 2px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04); }
+
+/* Header buttons — glass */
+[data-theme="dark"]  .hbtn { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.10); backdrop-filter: blur(10px); }
+[data-theme="light"] .hbtn { background: rgba(255,255,255,0.80); border-color: rgba(0,0,0,0.08); backdrop-filter: blur(10px); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+
+/* Finish Times header */
+.ft-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+
+/* Edit button — more refined */
+.ft-edit-btn { border-radius: 10px; font-size: 11px; letter-spacing: 1.2px; }
+[data-theme="dark"]  .ft-edit-btn { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.10); }
+[data-theme="light"] .ft-edit-btn { background: rgba(0,0,0,0.04); }
+
+/* Drag hint text */
+.vc-hint span { font-size: 11px; letter-spacing: 0.2px; }
+.hint-arr { border-radius: 6px; }
+
+/* Progress bar — thicker, rounder */
+.vc-bar { height: 4px; border-radius: 2px; }
+
+/* Vcard dragging — nicer glow */
+.vcard.pace.dragging { border-color: rgba(232,21,42,0.35); box-shadow: 0 0 0 1px rgba(232,21,42,0.15), 0 8px 32px rgba(232,21,42,0.15); }
+
+/* Logo area */
+.logo-wrap { padding: 2px 0; }
+
 </style>
 </head>
 <body>
@@ -420,7 +498,7 @@ function doSignOut(){auth.signOut().then(()=>{closeSheet('userOverlay');showToas
 
 // ═══ TRANSLATIONS ════════════════════════════
 const LANG={
-  no:{pace:'Tempo',speed:'Hastighet',drag:'dra for å justere',holdHint:'Hold inne for å taste inn verdi',
+  no:{pace:'Tempo',speed:'Hastighet',drag:'dra for å justere',holdHint:'Trykk for å taste inn verdi',
       paceUnit:'min / km',speedUnit:'km / t',finishTimes:'Finish Times',edit:'Rediger',
       selectDists:'Velg distanser',selectDistsSub:'Velg hvilke distanser som vises',
       signIn:'Logg inn',signInSub:'Lagre innstillinger på alle enheter.',
@@ -430,7 +508,7 @@ const LANG={
       inputPaceLabel:'Skriv inn tempo',inputSpeedLabel:'Skriv inn hastighet',
       inputPaceHint:'Format: m:ss  ·  f.eks. 4:37',inputSpeedHint:'Format: km/t  ·  f.eks. 13.5',
       invalidInput:'Ugyldig verdi',half:'Halvmaraton',marathon:'Maraton',},
-  en:{pace:'Pace',speed:'Speed',drag:'drag to adjust',holdHint:'Hold to type a value',
+  en:{pace:'Pace',speed:'Speed',drag:'drag to adjust',holdHint:'Tap to type a value',
       paceUnit:'min / km',speedUnit:'km / h',finishTimes:'Finish Times',edit:'Edit',
       selectDists:'Select distances',selectDistsSub:'Choose which distances are shown',
       signIn:'Sign in',signInSub:'Save your settings across all devices.',
@@ -708,26 +786,25 @@ function buildUserSheet(){
   else{btn.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>`;btn.style.borderColor='';}
 }
 
-// ═══ LONG PRESS → INPUT MODAL ═════════════════
+// ═══ TAP → INPUT MODAL ════════════════════════
+// A quick tap (no drag) opens the input keyboard immediately
 let pressTimer=null,pressType=null,dragMoved=false;
-
-function startPress(type,e){
-  dragMoved=false;pressType=type;
-  pressTimer=setTimeout(()=>{if(!dragMoved)openInputModal(type);},550);
-}
 function cancelPress(){clearTimeout(pressTimer);pressTimer=null;}
 
 function openInputModal(type){
   const t=T();
   const itEl=document.getElementById('inputType');
-  itEl.className='pace'; // always pace mode now
+  itEl.className='pace';
   document.getElementById('inputLabel').textContent=t.inputPaceLabel;
   document.getElementById('inputHint').textContent=t.inputPaceHint;
   const field=document.getElementById('inputField');
   field.value=fmtPace(paceSec);
   field.setAttribute('inputmode','text');
   document.getElementById('inputOverlay').classList.add('show');
-  setTimeout(()=>{field.focus();field.select();},150);
+  // Focus SYNCHRONOUSLY — no setTimeout — so iOS keyboard opens immediately
+  // (iOS only opens keyboard when focus() is called in a user-gesture context)
+  field.focus();
+  field.select();
 }
 
 function applyInput(){
@@ -758,52 +835,62 @@ document.getElementById('inputField').addEventListener('keydown',e=>{if(e.key===
 
 // ═══ DRAG + LONG PRESS ════════════════════════
 function makeDraggable(card,type,getVal,setVal,pxPerUnit){
-  let sx=0,sv=0,drag=false;
+  let sx=0,sy=0,sv=0,startTime=0,moved=false,active=false;
+  const TAP_MOVE=8,TAP_MS=220;
 
-  function onStart(x,isTouch){
-    sx=x;sv=getVal();drag=false;
-    startPress(type);
+  function onStart(x,y){
+    sx=x;sy=y;sv=getVal();startTime=Date.now();moved=false;active=true;
+    card.classList.add('pressing');
   }
-  function onMove(x){
-    const dx=Math.abs(x-sx);
-    if(dx>6){dragMoved=true;cancelPress();}
-    if(!dragMoved&&drag===false)drag=true;
-    if(dragMoved){
+  function onMove(x,y){
+    if(!active)return;
+    if(Math.abs(x-sx)>TAP_MOVE||Math.abs(y-sy)>TAP_MOVE){
+      moved=true;
+      card.classList.remove('pressing');
       card.classList.add('dragging');
-  
       setVal(sv+(x-sx)/pxPerUnit);
     }
   }
-  function onEnd(){
-    cancelPress();
+  function onEnd(x,y){
+    if(!active)return;
+    active=false;
+    const elapsed=Date.now()-startTime;
     card.classList.remove('dragging','pressing');
-
-    dragMoved=false;drag=false;
+    // Tap = short touch with no drag → open keyboard immediately
+    if(!moved && elapsed<TAP_MS){
+      // Must call focus() in the same synchronous call stack as touchend
+      openInputModal(type);
+    }
+    moved=false;
   }
 
   card.addEventListener('touchstart',e=>{
     if(e.target.closest('.adj-btn'))return;
-    card.classList.add('pressing');
-    onStart(e.touches[0].clientX,true);
+    onStart(e.touches[0].clientX,e.touches[0].clientY);
   },{passive:true});
   card.addEventListener('touchmove',e=>{
-    if(e.target.closest('.adj-btn'))return;
-    onMove(e.touches[0].clientX);
+    if(!active||e.target.closest('.adj-btn'))return;
+    onMove(e.touches[0].clientX,e.touches[0].clientY);
   },{passive:true});
-  card.addEventListener('touchend',onEnd,{passive:true});
-  card.addEventListener('touchcancel',onEnd,{passive:true});
-
+  card.addEventListener('touchend',e=>{
+    onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+  },{passive:true});
+  card.addEventListener('touchcancel',()=>{
+    active=false;moved=false;card.classList.remove('dragging','pressing');
+  },{passive:true});
   card.addEventListener('mousedown',e=>{
     if(e.target.closest('.adj-btn'))return;
-    card.classList.add('pressing');
-    onStart(e.clientX,false);
-    const mm=ev=>{onMove(ev.clientX);};
-    const mu=()=>{onEnd();document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);};
+    onStart(e.clientX,e.clientY);
+    const mm=ev=>onMove(ev.clientX,ev.clientY);
+    const mu=ev=>{
+      onEnd(ev.clientX,ev.clientY);
+      document.removeEventListener('mousemove',mm);
+      document.removeEventListener('mouseup',mu);
+    };
     document.addEventListener('mousemove',mm);
     document.addEventListener('mouseup',mu);
   });
 }
-
 makeDraggable(document.getElementById('paceCard'),'pace',()=>paceSec,v=>setPace(v,0),3);
 
 
