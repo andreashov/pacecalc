@@ -111,7 +111,17 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .hbtn:hover{border-color:var(--dim)}
 
 /* VALUE CARDS */
-.cards{position:relative;z-index:10;padding:0 14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.cards{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  z-index:20;
+  padding:12px 14px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+  background:var(--bg);
+  border-top:1px solid var(--brd);
+  box-shadow:0 -12px 40px var(--shadow);
+  transition:background .35s cubic-bezier(0.4,0,0.2,1), border-color .35s;
+}
 .vcard{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--brd);background:var(--card);padding:18px 18px 14px;user-select:none;touch-action:pan-y;box-shadow:0 2px 14px var(--shadow);transition:var(--tr);cursor:ew-resize}
 .vcard::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;border-radius:22px}
 .vcard.pace::before{background:radial-gradient(ellipse 130% 130% at 20% 50%,var(--glow-r) 0%,transparent 65%)}
@@ -156,7 +166,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .ft-title{font-size:15px;font-weight:700;color:var(--txt)}
 .ft-edit-btn{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);background:var(--card2);border:1px solid var(--brd);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
 .ft-edit-btn:hover{color:var(--txt);border-color:var(--dim)}
-.dist-list{padding:0 14px}
+.dist-list{padding:0 14px 280px}
 .dl-wrap{background:var(--dl-bg);border-radius:16px;overflow:hidden;margin-bottom:28px;border:1px solid var(--brd);box-shadow:0 2px 12px var(--shadow);transition:var(--tr)}
 .dr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--row-brd);transition:var(--tr)}
 .dr:last-child{border-bottom:none}
