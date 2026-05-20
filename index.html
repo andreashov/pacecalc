@@ -38,7 +38,7 @@
   --dl-bg:#0f0f1c;   /* finish times rows, slightly lighter than bg */
 }
 [data-theme="light"]{
-  --bg:#f4f4f8;      /* single light bg used everywhere */
+  --bg:#f2f2f7;      /* single light bg used everywhere */
   --card:#ffffff;    /* white cards */
   --card2:#f0f0f6;
   --brd:rgba(0,0,0,0.08);--brd2:rgba(0,0,0,0.04);
@@ -53,6 +53,8 @@
 
 /* Fill full screen, dark bg everywhere including status bar */
 html{height:100%;overflow:hidden;background:var(--bg);transition:background .3s}
+/* Ensure meta theme-color matches on load */
+
 body{
   height:100%;
   overflow:hidden;
@@ -117,14 +119,12 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
   position:fixed;
   bottom:0; left:0; right:0;
   z-index:20;
-  padding:10px 14px;
-  padding-bottom:max(16px, calc(10px + env(safe-area-inset-bottom)));
-  background:var(--bg);
-  border-top:1px solid var(--brd);
-  box-shadow:0 -16px 48px var(--shadow);
-  transition:background .35s cubic-bezier(0.4,0,0.2,1), border-color .35s;
+  padding:8px 12px;
+  padding-bottom:max(16px, env(safe-area-inset-bottom));
+  background:transparent;
+  /* No border, no shadow — the vcard inside handles its own styling */
 }
-.vcard{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--brd);background:var(--card);padding:14px 16px 12px;user-select:none;touch-action:pan-y;box-shadow:0 2px 14px var(--shadow);transition:var(--tr);cursor:ew-resize}
+.vcard{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--brd);background:var(--card);padding:14px 16px 12px;user-select:none;touch-action:pan-y;box-shadow:0 -4px 24px var(--shadow),0 2px 8px var(--shadow);transition:var(--tr);cursor:ew-resize}
 .vcard::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;border-radius:22px}
 .vcard.pace::before{background:radial-gradient(ellipse 130% 130% at 20% 50%,var(--glow-r) 0%,transparent 65%)}
 .vcard.speed::before{background:radial-gradient(ellipse 130% 130% at 80% 50%,var(--glow-b) 0%,transparent 65%)}
@@ -304,9 +304,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 [data-theme="dark"]  .vcard { background: linear-gradient(150deg, #161626 0%, #0f0f1c 100%); }
 [data-theme="light"] .vcard { background: linear-gradient(150deg, #ffffff 0%, #f8f8fd 100%); }
 
-/* Bottom panel — glass effect */
-[data-theme="dark"]  .cards { background: rgba(10,10,20,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.10); }
-[data-theme="light"] .cards { background: rgba(248,248,252,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(0,0,0,0.08); }
+/* Bottom panel — transparent so page bg shows through uniformly */
 
 /* Glowing progress bar */
 .vcard.pace .vc-bar-fill { box-shadow: 0 0 12px rgba(232,21,42,0.7), 0 0 4px rgba(232,21,42,0.4); }
@@ -1248,7 +1246,8 @@ function updateSpacer(){
   const cards   = document.querySelector('.cards');
   const spacer  = document.getElementById('cardSpacer');
   if(cards && spacer){
-    spacer.style.height = cards.offsetHeight + 'px';
+    // Add a small gap above the card
+    spacer.style.height = (cards.offsetHeight + 8) + 'px';
   }
 }
 updateSpacer();
