@@ -375,6 +375,58 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 /* Logo area */
 .logo-wrap { padding: 2px 0; }
 
+
+/* ═══ CALC BANNER ═══ */
+.calc-banner{
+  display:flex;align-items:center;gap:14px;
+  margin:0 14px 10px;padding:14px 16px;
+  background:var(--card);border:1px solid var(--brd);
+  border-radius:16px;cursor:pointer;
+  box-shadow:0 2px 12px var(--shadow);
+  transition:var(--tr);
+}
+.calc-banner:hover,[data-theme="dark"] .calc-banner:active{background:var(--card2);border-color:var(--red)}
+.calc-banner-icon{
+  width:42px;height:42px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(232,21,42,0.12);color:var(--red);
+}
+.calc-banner-text{flex:1;min-width:0}
+.calc-banner-title{font-size:15px;font-weight:700;color:var(--txt);margin-bottom:3px}
+.calc-banner-sub{font-size:12px;color:var(--dim);line-height:1.4}
+.calc-banner-arrow{font-size:20px;color:var(--dim);flex-shrink:0}
+
+/* ═══ CALC SHEET ═══ */
+.calc-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.calc-dist-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.calc-pre{padding:8px 14px;border-radius:20px;border:1px solid var(--brd);background:var(--card2);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
+.calc-pre:hover,.calc-pre.active{border-color:var(--red);color:var(--red);background:rgba(232,21,42,0.08)}
+.calc-dist-row{display:flex;align-items:center;background:var(--card2);border:1.5px solid var(--brd);border-radius:14px;padding:4px 16px 4px 4px;transition:border-color .2s;margin-bottom:4px}
+.calc-dist-row:focus-within{border-color:var(--red)}
+.calc-dist-inp{flex:1;background:none;border:none;outline:none;font-size:32px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;padding:8px 12px;font-variant-numeric:tabular-nums}
+.calc-dist-inp::placeholder{color:var(--dim2)}
+.calc-dist-unit{font-size:14px;color:var(--dim);font-weight:600}
+.calc-time-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.calc-time-inp{flex:1;background:var(--card2);border:1.5px solid var(--brd);border-radius:12px;padding:12px 8px;text-align:center;font-size:28px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;font-variant-numeric:tabular-nums;min-width:0}
+.calc-time-inp:focus{border-color:var(--red)}
+.calc-time-inp::placeholder{color:var(--dim2)}
+.calc-sep{font-size:28px;font-weight:700;color:var(--dim);flex-shrink:0}
+.calc-hint{font-size:11px;color:var(--dim);text-align:center;letter-spacing:.5px;margin-bottom:16px}
+.calc-result{background:linear-gradient(135deg,rgba(232,21,42,0.08),rgba(0,112,243,0.08));border:1px solid rgba(232,21,42,0.2);border-radius:18px;padding:20px;margin-bottom:8px}
+.calc-res-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.calc-res-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.calc-res-val{font-size:44px;font-weight:900;letter-spacing:-2px;color:var(--txt);font-variant-numeric:tabular-nums;line-height:1}
+.calc-res-unit{font-size:11px;color:var(--dim);margin-top:4px}
+.calc-apply-btn{width:100%;padding:14px;border-radius:13px;border:none;background:var(--red);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .2s}
+.calc-apply-btn:hover{opacity:0.85}
+.calc-clear-btn{
+  flex-shrink:0;width:36px;height:36px;border-radius:10px;
+  border:1px solid var(--brd);background:var(--card2);
+  color:var(--dim);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--tr);align-self:center;
+}
+.calc-clear-btn:hover{color:var(--red);border-color:var(--red)}
 </style>
 </head>
 <body>
@@ -421,6 +473,18 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 </div>
 
 <div class="scroll-area">
+  <!-- Calc banner -->
+  <div class="calc-banner" onclick="openCalcSheet()">
+    <div class="calc-banner-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div class="calc-banner-text">
+      <div class="calc-banner-title" data-i18n="calcBannerTitle">Beregn tempo fra løpetid</div>
+      <div class="calc-banner-sub" data-i18n="calcBannerSub">Tast inn distanse og tid — få eksakt tempo og hastighet</div>
+    </div>
+    <div class="calc-banner-arrow">›</div>
+  </div>
+
   <div class="ft-header">
     <div class="ft-title" data-i18n="finishTimes">Finish Times</div>
     <button class="ft-edit-btn" onclick="openDistSheet()" data-i18n="edit">Rediger</button>
@@ -474,6 +538,63 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 <!-- FIXED BOTTOM SPEED BAR -->
 
 
+<!-- CALC SHEET: Pace from race result -->
+<div class="overlay" id="calcOverlay" onclick="overlayClick('calcOverlay',event)">
+  <div class="sheet">
+    <div class="sheet-hd">
+      <div class="handle"></div>
+      <div class="sheet-title" data-i18n="calcTitle">Beregn tempo fra løpetid</div>
+      <div class="sheet-sub" data-i18n="calcSub">Skriv inn distanse og tid — få eksakt pace</div>
+    </div>
+    <div class="sheet-body">
+
+      <!-- Distance -->
+      <div class="calc-label" data-i18n="calcDist">Distanse</div>
+      <div class="calc-dist-presets">
+        <button class="calc-pre" onclick="setCalcDist(5)">5 km</button>
+        <button class="calc-pre" onclick="setCalcDist(10)">10 km</button>
+        <button class="calc-pre" onclick="setCalcDist(21.0975)">Halvmaraton</button>
+        <button class="calc-pre" onclick="setCalcDist(42.195)">Maraton</button>
+      </div>
+      <div class="calc-dist-row">
+        <input class="calc-dist-inp" id="calcDistInp" type="number" inputmode="decimal" step="0.1" placeholder="10" oninput="runCalc()">
+        <span class="calc-dist-unit">km</span>
+      </div>
+
+      <!-- Time -->
+      <div class="calc-label" data-i18n="calcTime" style="margin-top:16px">Tid (t : min : sek)</div>
+      <div class="calc-time-row">
+        <input class="calc-time-inp" id="calcH" type="text" inputmode="numeric" maxlength="2" placeholder="00">
+        <span class="calc-sep">:</span>
+        <input class="calc-time-inp" id="calcM" type="text" inputmode="numeric" maxlength="2" placeholder="40">
+        <span class="calc-sep">:</span>
+        <input class="calc-time-inp" id="calcS" type="text" inputmode="numeric" maxlength="2" placeholder="20">
+        <button class="calc-clear-btn" onclick="clearCalcTime()">✕</button>
+      </div>
+      <div class="calc-hint" data-i18n="calcHint">timer &nbsp;·&nbsp; minutter &nbsp;·&nbsp; sekunder</div>
+
+      <!-- Result -->
+      <div class="calc-result" id="calcResult">
+        <div class="calc-res-row">
+          <div>
+            <div class="calc-res-label" data-i18n="pace">Tempo</div>
+            <div class="calc-res-val" id="calcResPace">–</div>
+            <div class="calc-res-unit">min / km</div>
+          </div>
+          <div style="text-align:right">
+            <div class="calc-res-label" data-i18n="speed">Hastighet</div>
+            <div class="calc-res-val" id="calcResKmh">–</div>
+            <div class="calc-res-unit" data-i18n="speedUnit">km / t</div>
+          </div>
+        </div>
+        <button class="calc-apply-btn" id="calcApplyBtn" onclick="applyCalcPace()" data-i18n="calcApply">Bruk dette tempoet ↑</button>
+      </div>
+
+      <button class="sheet-close" onclick="closeSheet('calcOverlay')" data-i18n="close" style="margin-top:8px">Lukk</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -506,6 +627,9 @@ const LANG={
       signIn:'Logg inn',signInSub:'Lagre innstillinger på alle enheter.',
       continueGoogle:'Fortsett med Google',cancel:'Avbryt',close:'Lukk',signOut:'Logg ut',
       language:'Språk',theme:'Tema',dark:'Mørk',light:'Lys',settings:'Innstillinger',
+      calcBannerTitle:'Beregn tempo fra løpetid',calcBannerSub:'Tast inn distanse og tid — få eksakt tempo og hastighet',calcTitle:'Beregn tempo fra løpetid',calcSub:'Skriv inn distanse og tid — få eksakt pace',
+      calcDist:'Distanse',calcTime:'Tid (t : min : sek)',calcHint:'timer  ·  minutter  ·  sekunder',
+      calcApply:'Bruk dette tempoet ↑',
       fbErr:'Firebase ikke koblet til',signedInOk:'✓ Logget inn!',signedOut:'Logget ut',
       inputPaceLabel:'Skriv inn tempo',inputSpeedLabel:'Skriv inn hastighet',
       inputPaceHint:'Format: m:ss  ·  f.eks. 4:37',inputSpeedHint:'Format: km/t  ·  f.eks. 13.5',
@@ -516,6 +640,9 @@ const LANG={
       signIn:'Sign in',signInSub:'Save your settings across all devices.',
       continueGoogle:'Continue with Google',cancel:'Cancel',close:'Close',signOut:'Sign out',
       language:'Language',theme:'Theme',dark:'Dark',light:'Light',settings:'Settings',
+      calcBannerTitle:'Calculate pace from race time',calcBannerSub:'Enter distance and time — get exact pace and speed',calcTitle:'Calculate pace from race time',calcSub:'Enter distance and time — get exact pace',
+      calcDist:'Distance',calcTime:'Time (h : min : sec)',calcHint:'hours  ·  minutes  ·  seconds',
+      calcApply:'Apply this pace ↑',
       fbErr:'Firebase not connected',signedInOk:'✓ Signed in!',signedOut:'Signed out',
       inputPaceLabel:'Enter pace',inputSpeedLabel:'Enter speed',
       inputPaceHint:'Format: m:ss  ·  e.g. 4:37',inputSpeedHint:'Format: km/h  ·  e.g. 13.5',
@@ -916,6 +1043,97 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
     if(darkImg){ darkImg.classList.add('fallback'); darkImg.style.display='block'; }
   });
 })();
+
+// ═══ PACE CALCULATOR ════════════════════════════
+let calcPaceSec = null;
+
+function openCalcSheet(){
+  document.getElementById('calcOverlay').classList.add('show');
+  // Set up auto-advance on first open
+  setupCalcInputs();
+}
+
+// Auto-advance between HH:MM:SS fields + backspace goes back
+let calcInputsReady = false;
+function setupCalcInputs(){
+  if(calcInputsReady) return;
+  calcInputsReady = true;
+  const fields = ['calcH','calcM','calcS'];
+  fields.forEach((id, i) => {
+    const inp = document.getElementById(id);
+
+    inp.addEventListener('input', () => {
+      // Only allow digits
+      inp.value = inp.value.replace(/\D/g,'');
+      // Max 2 digits
+      if(inp.value.length > 2) inp.value = inp.value.slice(0,2);
+      // Auto-advance to next field when 2 digits entered
+      if(inp.value.length === 2 && i < fields.length - 1){
+        document.getElementById(fields[i+1]).focus();
+        document.getElementById(fields[i+1]).select();
+      }
+      runCalc();
+    });
+
+    inp.addEventListener('keydown', e => {
+      // Backspace on empty → go back to previous field
+      if(e.key === 'Backspace' && inp.value === '' && i > 0){
+        e.preventDefault();
+        const prev = document.getElementById(fields[i-1]);
+        prev.focus();
+        prev.select();
+      }
+    });
+  });
+}
+
+function clearCalcTime(){
+  ['calcH','calcM','calcS'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('calcH').focus();
+  runCalc();
+}
+
+function setCalcDist(km){
+  document.getElementById('calcDistInp').value = km;
+  // Highlight active preset
+  document.querySelectorAll('.calc-pre').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  runCalc();
+}
+
+function runCalc(){
+  const dist = parseFloat(document.getElementById('calcDistInp').value);
+  const h    = parseInt(document.getElementById('calcH').value) || 0;
+  const m    = parseInt(document.getElementById('calcM').value) || 0;
+  const s    = parseInt(document.getElementById('calcS').value) || 0;
+
+  const totalSec = h * 3600 + m * 60 + s;
+  if (!dist || dist <= 0 || totalSec <= 0) {
+    calcPaceSec = null;
+    document.getElementById('calcResPace').textContent = '–';
+    document.getElementById('calcResKmh').textContent  = '–';
+    return;
+  }
+
+  calcPaceSec = totalSec / dist;
+  const pMin  = Math.floor(calcPaceSec / 60);
+  const pSec  = Math.round(calcPaceSec % 60);
+  const kmhVal = 3600 / calcPaceSec;
+
+  document.getElementById('calcResPace').textContent = `${pMin}:${pad2(pSec)}`;
+  document.getElementById('calcResKmh').textContent  = kmhVal.toFixed(2);
+}
+
+function applyCalcPace(){
+  if (!calcPaceSec) return;
+  // Clamp to allowed range
+  const clamped = Math.max(PACE_MIN, Math.min(PACE_MAX, Math.round(calcPaceSec)));
+  setPace(clamped);
+  closeSheet('calcOverlay');
+  showToast(lang === 'no' ? '✓ Tempo oppdatert' : '✓ Pace applied');
+}
 
 // ═══ INIT ═════════════════════════════════════
 // Apply all restored state to DOM
