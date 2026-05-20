@@ -186,13 +186,13 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 /* BOTTOM SHEETS */
 .overlay{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
 .overlay.show{opacity:1;pointer-events:auto}
-.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;border:1px solid var(--brd);border-bottom:none;transition:background .3s,border-color .3s;max-height:90vh;display:flex;flex-direction:column}
+.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;border:1px solid var(--brd);border-bottom:none;transition:background .3s,border-color .3s;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box}
 @keyframes up{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
-.sheet-hd{padding:16px 20px 0;flex-shrink:0}
+.sheet-hd{padding:16px 20px 0;flex-shrink:0;width:100%;box-sizing:border-box;overflow:hidden}
 .handle{width:36px;height:4px;background:var(--brd);border-radius:2px;margin:0 auto 18px}
 .sheet-title{font-size:20px;font-weight:700;color:var(--txt);margin-bottom:4px}
 .sheet-sub{color:var(--dim);font-size:13px;margin-bottom:16px}
-.sheet-body{padding:0 20px 44px;overflow-y:auto;flex:1}
+.sheet-body{padding:0 20px 44px;overflow-y:auto;overflow-x:hidden;flex:1;width:100%;box-sizing:border-box}
 .sheet-body::-webkit-scrollbar{display:none}
 
 /* Input modal (long press) */
@@ -378,6 +378,22 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .logo-wrap { padding: 2px 0; }
 
 
+/* ═══ PACE INPUT FIELDS ═══ */
+.pace-fields-row{display:flex;align-items:flex-end;gap:8px;margin-bottom:16px}
+.pace-field-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.pace-field-inp{
+  width:100%;text-align:center;
+  background:var(--card2);border:2px solid var(--brd);border-radius:16px;
+  padding:16px 8px;font-size:52px;font-weight:700;
+  color:var(--txt);font-family:'Inter',sans-serif;
+  outline:none;font-variant-numeric:tabular-nums;
+  letter-spacing:-1px;transition:border-color .2s;
+}
+.pace-field-inp:focus{border-color:var(--red)}
+.pace-field-inp::placeholder{color:var(--dim2)}
+.pace-field-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
+.pace-colon{font-size:52px;font-weight:700;color:var(--dim);padding-bottom:26px;flex-shrink:0}
+
 /* ═══ CALC BANNER ═══ */
 .calc-banner{
   display:flex;align-items:center;gap:14px;
@@ -412,11 +428,20 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 }
 
 /* ═══ CALC SHEET ═══ */
-.calc-dist-boxes{display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.calc-dist-field{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.calc-dist-boxes{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:4px;width:100%;box-sizing:border-box;overflow:hidden;
+}
+.calc-dist-field{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  flex:1;min-width:0;overflow:hidden;
+}
 .calc-field-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
-/* Smaller time inputs for km/m boxes */
-.calc-dist-boxes .calc-time-inp{font-size:22px;padding:10px 6px}
+/* Compact km/m inputs — same height as time inputs but smaller font */
+.calc-dist-boxes .calc-time-inp{
+  font-size:28px;padding:12px 4px;
+  width:100%;min-width:0;max-width:100%;
+}
 .calc-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
 .calc-dist-presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .calc-pre{padding:8px 14px;border-radius:20px;border:1px solid var(--brd);background:var(--card2);color:var(--txt);font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr)}
@@ -426,8 +451,8 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .calc-dist-inp{flex:1;background:none;border:none;outline:none;font-size:32px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;padding:8px 12px;font-variant-numeric:tabular-nums}
 .calc-dist-inp::placeholder{color:var(--dim2)}
 .calc-dist-unit{font-size:14px;color:var(--dim);font-weight:600}
-.calc-time-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.calc-time-inp{flex:1;background:var(--card2);border:1.5px solid var(--brd);border-radius:12px;padding:12px 8px;text-align:center;font-size:28px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;font-variant-numeric:tabular-nums;min-width:0}
+.calc-time-row{display:flex;align-items:center;gap:4px;margin-bottom:6px;width:100%;box-sizing:border-box;overflow:hidden}
+.calc-time-inp{flex:1;min-width:0;max-width:100%;box-sizing:border-box;background:var(--card2);border:1.5px solid var(--brd);border-radius:12px;padding:10px 4px;text-align:center;font-size:26px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;font-variant-numeric:tabular-nums}
 .calc-time-inp:focus{border-color:var(--red)}
 .calc-time-inp::placeholder{color:var(--dim2)}
 .calc-sep{font-size:28px;font-weight:700;color:var(--dim);flex-shrink:0}
@@ -522,12 +547,22 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
     <div class="sheet-hd">
       <div class="handle"></div>
       <div id="inputType" class="pace">
-        <div class="input-label" id="inputLabel">Tempo</div>
-        <input class="input-field" id="inputField" type="text" inputmode="decimal" autocomplete="off" spellcheck="false">
-        <div class="input-hint" id="inputHint">Format: m:ss &nbsp;·&nbsp; f.eks. 4:37</div>
+        <div class="input-label" id="inputLabel">Skriv inn tempo</div>
+        <div class="input-hint" id="inputHint"></div>
       </div>
     </div>
     <div class="sheet-body">
+      <div class="pace-fields-row">
+        <div class="pace-field-wrap">
+          <input class="pace-field-inp" id="inputMin" type="text" inputmode="numeric" maxlength="2" placeholder="04">
+          <div class="pace-field-lbl">min</div>
+        </div>
+        <div class="pace-colon">:</div>
+        <div class="pace-field-wrap">
+          <input class="pace-field-inp" id="inputSec" type="text" inputmode="numeric" maxlength="2" placeholder="37">
+          <div class="pace-field-lbl">sek</div>
+        </div>
+      </div>
       <button class="input-ok" id="inputOk" onclick="applyInput()">OK</button>
       <button class="input-cancel" onclick="closeSheet('inputOverlay')" data-i18n="cancel">Avbryt</button>
     </div>
@@ -583,11 +618,12 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
           <input class="calc-time-inp" id="calcKm" type="text" inputmode="numeric" maxlength="3" placeholder="10">
           <span class="calc-field-lbl">km</span>
         </div>
-        <span class="calc-sep" style="font-size:22px;opacity:.4">+</span>
+        <span style="font-size:16px;color:var(--dim);flex-shrink:0;padding:0 2px">+</span>
         <div class="calc-dist-field">
           <input class="calc-time-inp" id="calcMeters" type="text" inputmode="numeric" maxlength="3" placeholder="000">
           <span class="calc-field-lbl">m</span>
         </div>
+        <button class="calc-clear-btn" onclick="clearCalcDist()" title="Nullstill distanse" style="font-size:16px;align-self:center;flex-shrink:0">↺</button>
       </div>
 
       <!-- Time -->
@@ -598,7 +634,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
         <input class="calc-time-inp" id="calcM" type="text" inputmode="numeric" maxlength="2" placeholder="40">
         <span class="calc-sep">:</span>
         <input class="calc-time-inp" id="calcS" type="text" inputmode="numeric" maxlength="2" placeholder="20">
-        <button class="calc-clear-btn" onclick="clearCalcTime()" title="Nullstill alt">↺</button>
+        <button class="calc-clear-btn" onclick="clearCalcTime()" title="Nullstill alt" style="font-size:16px">↺</button>
       </div>
       <div class="calc-hint" data-i18n="calcHint">timer &nbsp;·&nbsp; minutter &nbsp;·&nbsp; sekunder</div>
 
@@ -962,45 +998,45 @@ function cancelPress(){clearTimeout(pressTimer);pressTimer=null;}
 
 function openInputModal(type){
   const t=T();
-  const itEl=document.getElementById('inputType');
-  itEl.className='pace';
+  document.getElementById('inputType').className='pace';
   document.getElementById('inputLabel').textContent=t.inputPaceLabel;
-  document.getElementById('inputHint').textContent=t.inputPaceHint;
-  const field=document.getElementById('inputField');
-  field.value=fmtPace(paceSec);
-  field.setAttribute('inputmode','text');
+  document.getElementById('inputHint').textContent='';
+  // Pre-fill with current pace
+  const m=Math.floor(paceSec/60), s=paceSec%60;
+  const minFld=document.getElementById('inputMin');
+  const secFld=document.getElementById('inputSec');
+  minFld.value=pad2(m);
+  secFld.value=pad2(s);
   document.getElementById('inputOverlay').classList.add('show');
-  // Focus SYNCHRONOUSLY — no setTimeout — so iOS keyboard opens immediately
-  // (iOS only opens keyboard when focus() is called in a user-gesture context)
-  field.focus();
-  field.select();
+  // Sync focus — iOS opens keyboard from click context
+  minFld.focus();
+  minFld.select();
+  // Auto-advance min→sec when 2 digits entered
+  minFld.oninput=()=>{
+    minFld.value=minFld.value.replace(/\D/g,'').slice(0,2);
+    if(minFld.value.length===2){secFld.focus();secFld.select();}
+  };
+  secFld.oninput=()=>{
+    secFld.value=secFld.value.replace(/\D/g,'').slice(0,2);
+  };
+  secFld.onkeydown=e=>{
+    if(e.key==='Backspace'&&secFld.value===''){minFld.focus();minFld.select();}
+    if(e.key==='Enter') applyInput();
+  };
+  minFld.onkeydown=e=>{ if(e.key==='Enter') applyInput(); };
 }
 
 function applyInput(){
-  const type=document.getElementById('inputType').className;
-  const val=document.getElementById('inputField').value.trim();
-  if(type==='pace'){
-    // Parse M:SS or MM:SS
-    const parts=val.split(':');
-    if(parts.length===2){
-      const m=parseInt(parts[0]),s=parseInt(parts[1]);
-      if(!isNaN(m)&&!isNaN(s)&&s>=0&&s<60&&m>=0){
-        closeSheet('inputOverlay');
-        setPace(m*60+s);return;
-      }
-    }
-  } else {
-    const v=parseFloat(val.replace(',','.'));
-    if(!isNaN(v)&&v>0){closeSheet('inputOverlay');setKmh(v);return;}
-  }
-  // Invalid
-  document.getElementById('inputField').style.borderColor='var(--red)';
-  showToast(T().invalidInput);
-  setTimeout(()=>{document.getElementById('inputField').style.borderColor='';},1000);
+  const m=parseInt(document.getElementById('inputMin').value)||0;
+  const s=parseInt(document.getElementById('inputSec').value)||0;
+  if(s<0||s>59||m<0){showToast(T().invalidInput);return;}
+  const total=m*60+s;
+  if(total<PACE_MIN||total>PACE_MAX){showToast(T().invalidInput);return;}
+  closeSheet('inputOverlay');
+  setPace(total);
 }
 
-// Allow Enter key to confirm
-document.getElementById('inputField').addEventListener('keydown',e=>{if(e.key==='Enter')applyInput();});
+
 
 // ═══ DRAG + LONG PRESS ════════════════════════
 function makeDraggable(card,type,getVal,setVal,pxPerUnit){
@@ -1076,6 +1112,19 @@ function overlayClick(id,e){if(e.target===document.getElementById(id))closeSheet
 // ═══ TOAST ════════════════════════════════════
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
 
+// ═══ KEYBOARD AVOIDANCE ══════════════════════
+// When soft keyboard opens on iOS, push overlays up
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', ()=>{
+    const vh = window.visualViewport.height;
+    const fullH = window.innerHeight;
+    const kbH = Math.max(0, fullH - vh - window.visualViewport.offsetTop);
+    document.querySelectorAll('.overlay.show').forEach(el=>{
+      el.style.paddingBottom = kbH > 50 ? kbH+'px' : '';
+    });
+  });
+}
+
 // ═══ LOGO FALLBACK ═══════════════════════════
 // If logo-light.png is missing, fall back to CSS-filter on logo.png
 (()=>{
@@ -1103,16 +1152,18 @@ function setupCalcInputs(){
   if(calcInputsReady) return;
   calcInputsReady = true;
   const fields = ['calcKm','calcMeters','calcH','calcM','calcS'];
+  const maxDigits = {calcKm:3, calcMeters:3, calcH:2, calcM:2, calcS:2};
   fields.forEach((id, i) => {
     const inp = document.getElementById(id);
 
     inp.addEventListener('input', () => {
       // Only allow digits
-      inp.value = inp.value.replace(/\D/g,'');
-      // Max 2 digits
-      if(inp.value.length > 2) inp.value = inp.value.slice(0,2);
-      // Auto-advance to next field when 2 digits entered
-      if(inp.value.length === 2 && i < fields.length - 1){
+      inp.value = inp.value.replace(/[^0-9]/g,'');
+      // Max digits: 3 for km/meters, 2 for time fields
+      const maxD = (id==='calcKm'||id==='calcMeters') ? 3 : 2;
+      if(inp.value.length > maxD) inp.value = inp.value.slice(0,maxD);
+      // Auto-advance to next field when max digits reached
+      if(inp.value.length === maxD && i < fields.length - 1){
         document.getElementById(fields[i+1]).focus();
         document.getElementById(fields[i+1]).select();
       }
@@ -1129,6 +1180,14 @@ function setupCalcInputs(){
       }
     });
   });
+}
+
+function clearCalcDist(){
+  document.getElementById('calcKm').value='';
+  document.getElementById('calcMeters').value='';
+  document.querySelectorAll('.calc-pre').forEach(b=>b.classList.remove('active'));
+  document.getElementById('calcKm').focus();
+  runCalc();
 }
 
 function clearCalcTime(){
