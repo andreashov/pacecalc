@@ -1326,11 +1326,11 @@ function bumpAnim(el,dir){el.classList.remove('bump','bump-down');void el.offset
 // Grenser er % av terskel-pace (10K-pace). Høyere sek/km = lavere intensitet.
 // S1 ≥ T×1.20 | S2 T×1.10–1.20 | S3 T×1.03–1.10 | S4 T×0.97–1.03 | S5 < T×0.97
 const ZONE_DEF=[
-  {id:1,color:'#94a3b8',loFac:1.20,hiFac:Infinity, name:{no:'Intensitetssone 1',en:'Intensity zone 1'}, desc:{no:'RPE 6–9 · Svært lett, kan synge',en:'RPE 6–9 · Very easy, could sing'}},
-  {id:2,color:'#60a5fa',loFac:1.10,hiFac:1.20,     name:{no:'Intensitetssone 2',en:'Intensity zone 2'}, desc:{no:'RPE 10–12 · Lett, prater uanstrengt',en:'RPE 10–12 · Easy, talk freely'}},
-  {id:3,color:'#4ade80',loFac:1.03,hiFac:1.10,     name:{no:'Intensitetssone 3',en:'Intensity zone 3'}, desc:{no:'RPE 13–14 · Moderat, prater med anstrengelse',en:'RPE 13–14 · Moderate, talking takes effort'}},
-  {id:4,color:'#fbbf24',loFac:0.97,hiFac:1.03,     name:{no:'Intensitetssone 4',en:'Intensity zone 4'}, desc:{no:'RPE 15–16 · Hardt, vanskelig å prate',en:'RPE 15–16 · Hard, difficult to talk'}},
-  {id:5,color:'#ef4444',loFac:0,   hiFac:0.97,     name:{no:'Intensitetssone 5',en:'Intensity zone 5'}, desc:{no:'RPE 17–20 · Svært hardt, kan ikke prate',en:'RPE 17–20 · Very hard, cannot talk'}},
+  {id:1,color:'#94a3b8',loFac:1.20,hiFac:Infinity, name:{no:'Intensitetssone 1',en:'Intensity zone 1'}, desc:{no:'Veldig lett · Kan prate uanstrengt',en:'Very easy · Can talk freely'}},
+  {id:2,color:'#60a5fa',loFac:1.10,hiFac:1.20,     name:{no:'Intensitetssone 2',en:'Intensity zone 2'}, desc:{no:'Nokså lett · Kan si lengre setninger relativt uanstrengt',en:'Fairly easy · Can say longer sentences fairly easily'}},
+  {id:3,color:'#4ade80',loFac:1.03,hiFac:1.10,     name:{no:'Intensitetssone 3',en:'Intensity zone 3'}, desc:{no:'Behagelig anstrengende · Kan si korte setninger',en:'Comfortably hard · Can say short sentences'}},
+  {id:4,color:'#fbbf24',loFac:0.97,hiFac:1.03,     name:{no:'Intensitetssone 4',en:'Intensity zone 4'}, desc:{no:'Anstrengende · Kan si noen ord eller svært korte setninger',en:'Hard · Can say a few words or very short sentences'}},
+  {id:5,color:'#ef4444',loFac:0,   hiFac:0.97,     name:{no:'Intensitetssone 5',en:'Intensity zone 5'}, desc:{no:'Veldig anstrengende · Kan kun si et ord eller to, puster tungt',en:'Very hard · Can only say a word or two, breathing heavily'}},
 ];
 
 function getZoneBounds(){
