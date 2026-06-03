@@ -1446,23 +1446,36 @@ function buildUserSheet(){
   if(!hd||!body)return;
   const t=T();
   // 10K input block (shared between logged-in and logged-out)
-  const cur10k = t10kSec ? fmtTime(t10kSec) : '';
+  const curMin = t10kSec ? String(Math.floor(t10kSec/60)).padStart(2,'0') : '';
+  const curSec = t10kSec ? String(t10kSec%60).padStart(2,'0') : '';
   const t10kLabel = lang==='no' ? '10K-tid for soner' : '10K time for zones';
   const t10kSub   = lang==='no' ? 'Olympiatoppens soneskala tilpasses din terskel-pace' : 'Olympiatoppen zones adapt to your threshold pace';
-  const t10kPh    = lang==='no' ? 'f.eks. 45:00' : 'e.g. 45:00';
   const t10kSave  = lang==='no' ? 'Lagre' : 'Save';
-  const t10kRow=`<div style="margin-bottom:14px">
+  const inpStyle  = `width:100%;text-align:center;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:16px;padding:14px 6px;font-size:40px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;outline:none;font-variant-numeric:tabular-nums;letter-spacing:-1px;transition:border-color .2s`;
+  const t10kRow=`<div style="margin-bottom:16px">
     <div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px">${t10kLabel}</div>
-    <div style="font-size:11px;color:var(--dim);margin-bottom:8px">${t10kSub}</div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <input id="inp10k" type="text" inputmode="text" placeholder="${t10kPh}" value="${cur10k}" onkeydown="if(event.key==='Enter')apply10k()"
-        style="flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;
-               padding:10px 14px;font-size:18px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;
-               outline:none;font-variant-numeric:tabular-nums;letter-spacing:-.5px">
-      <button onclick="apply10k()" style="padding:10px 16px;border-radius:12px;border:none;background:var(--blue);
-              color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">${t10kSave}</button>
+    <div style="font-size:11px;color:var(--dim);margin-bottom:10px">${t10kSub}</div>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <input id="inp10kMin" type="text" inputmode="numeric" maxlength="2" placeholder="45" value="${curMin}"
+          onkeydown="if(event.key==='Enter')apply10k()"
+          onfocus="this.select()"
+          oninput="if(this.value.length===2)document.getElementById('inp10kSec').focus()"
+          style="${inpStyle}">
+        <span style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)">min</span>
+      </div>
+      <div style="font-size:40px;font-weight:700;color:var(--dim);padding-bottom:22px">:</div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+        <input id="inp10kSec" type="text" inputmode="numeric" maxlength="2" placeholder="00" value="${curSec}"
+          onkeydown="if(event.key==='Enter')apply10k()"
+          onfocus="this.select()"
+          style="${inpStyle}">
+        <span style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim)">sek</span>
+      </div>
     </div>
-    ${t10kSec?`<div style="font-size:11px;color:var(--dim);margin-top:6px">${lang==='no'?'Terskel-pace':'Threshold pace'}: <b style="color:var(--txt)">${fmtPace(Math.round(t10kSec/10))}/km</b></div>`:''}
+    <button onclick="apply10k()" style="width:100%;padding:14px;border-radius:14px;border:none;background:var(--blue);
+            color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">${t10kSave}</button>
+    ${t10kSec?`<div style="font-size:11px;color:var(--dim);margin-top:8px;text-align:center">${lang==='no'?'Terskel-pace':'Threshold pace'}: <b style="color:var(--txt)">${fmtPace(Math.round(t10kSec/10))}/km</b></div>`:''}
   </div>`;
   if(curUser){
     hd.innerHTML=`<div class="handle"></div><div class="profile-row"><div class="pav">${curUser.photoURL?`<img src="${curUser.photoURL}">`:( curUser.displayName||'?')[0].toUpperCase()}</div><div><div class="pn">${curUser.displayName||'User'}</div><div class="pe">${curUser.email||''}</div></div></div>`;
@@ -1479,12 +1492,10 @@ function buildUserSheet(){
 }
 
 function apply10k(){
-  const raw=(document.getElementById('inp10k')||{}).value||'';
-  // Accept mm:ss or h:mm:ss
-  const parts=raw.trim().split(':').map(Number);
-  let secs=0;
-  if(parts.length===2&&!isNaN(parts[0])&&!isNaN(parts[1])){secs=parts[0]*60+parts[1];}
-  else if(parts.length===3&&!isNaN(parts[0])&&!isNaN(parts[1])&&!isNaN(parts[2])){secs=parts[0]*3600+parts[1]*60+parts[2];}
+  const m=parseInt((document.getElementById('inp10kMin')||{}).value||'0',10);
+  const s=parseInt((document.getElementById('inp10kSec')||{}).value||'0',10);
+  if(isNaN(m)||isNaN(s)||s<0||s>59){showToast(lang==='no'?'Ugyldig tid':'Invalid time');return;}
+  const secs=m*60+s;
   if(secs<600||secs>7200){showToast(lang==='no'?'Ugyldig tid (10–120 min)':'Invalid time (10–120 min)');return;}
   save10k(secs);
   showToast(lang==='no'?`✓ Terskel-pace: ${fmtPace(Math.round(secs/10))}/km`:`✓ Threshold pace: ${fmtPace(Math.round(secs/10))}/km`);
