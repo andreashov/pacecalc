@@ -546,6 +546,18 @@ html { perspective: 1400px; perspective-origin: center 40%; }
 }
 
 
+/* ═══ MOBILE BLOCK ═══ */
+#mobile-block{
+  display:none;
+  position:fixed;inset:0;z-index:99999;
+  background:var(--bg);
+  flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 32px;
+}
+#mobile-block .mb-icon{font-size:56px;margin-bottom:24px;line-height:1;}
+#mobile-block .mb-title{font-size:22px;font-weight:800;color:var(--txt);margin-bottom:10px;letter-spacing:-.5px;}
+#mobile-block .mb-sub{font-size:15px;color:var(--txt2);line-height:1.6;max-width:280px;}
+
 /* ═══ PACE ZONE CARD ═══ */
 .zone-card{
   margin:10px 14px 0;
@@ -603,6 +615,13 @@ html { perspective: 1400px; perspective-origin: center 40%; }
 </head>
 <body>
 
+
+<!-- MOBILE BLOCK OVERLAY -->
+<div id="mobile-block">
+  <div class="mb-icon">🖥️</div>
+  <div class="mb-title" id="mb-title">Kun for PC / nettbrett</div>
+  <div class="mb-sub" id="mb-sub">PACEcalc er ikke tilgjengelig på mobiltelefon. Åpne appen i en nettleser på PC eller nettbrett.</div>
+</div>
 
 <header>
   <div class="logo-wrap">
@@ -1481,6 +1500,38 @@ requestAnimationFrame(() => requestAnimationFrame(updateSpacer));
 // Also update after theme/lang changes (card height may shift)
 const _origApplyTheme = applyTheme;
 applyTheme = function(){ _origApplyTheme.apply(this,arguments); setTimeout(updateSpacer,400); };
+
+// ═══ MOBILE BLOCK ═════════════════════════════
+(function(){
+  const MB_MSGS={
+    no:{title:'Kun for PC / nettbrett',sub:'PACEcalc er ikke tilgjengelig på mobiltelefon. Åpne appen i en nettleser på PC eller nettbrett.'},
+    en:{title:'Desktop only',sub:'PACEcalc is not available on mobile phones. Please open the app in a browser on a PC or tablet.'}
+  };
+  function isMobilePhone(){
+    // True only for phone-sized screens — tablets (≥768px) are allowed
+    const ua = navigator.userAgent;
+    const phone = /Android.*Mobile|iPhone|iPod|Windows Phone/i.test(ua);
+    const narrow = window.innerWidth < 640 && window.innerHeight > window.innerWidth;
+    return phone || narrow;
+  }
+  function checkMobile(){
+    const bl = document.getElementById('mobile-block');
+    if(!bl) return;
+    if(isMobilePhone()){
+      const m = MB_MSGS[lang] || MB_MSGS.no;
+      document.getElementById('mb-title').textContent = m.title;
+      document.getElementById('mb-sub').textContent   = m.sub;
+      bl.style.display='flex';
+    } else {
+      bl.style.display='none';
+    }
+  }
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+  // Re-check after language toggle so text updates
+  const _origApplyLang = applyLang;
+  applyLang = function(){ _origApplyLang.apply(this,arguments); checkMobile(); };
+})();
 
 // ═══ INIT ═════════════════════════════════════
 // Apply all restored state to DOM
