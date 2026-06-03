@@ -557,6 +557,172 @@ html { perspective: 1400px; perspective-origin: center 40%; }
 }
 
 
+/* ══════════════════════════════════════════════════
+   AURORA BACKGROUND
+══════════════════════════════════════════════════ */
+[data-theme="dark"]  { --aurora-base:#07071299; }
+[data-theme="light"] { --aurora-base:#dcdcf0cc; }
+
+#bg-canvas{
+  position:absolute;inset:0;z-index:0;
+  pointer-events:none;overflow:hidden;
+  filter:blur(72px);
+}
+.bb{ position:absolute;border-radius:50%;will-change:transform; }
+
+[data-theme="dark"]  .bb1{ width:320px;height:320px;background:radial-gradient(circle,rgba(232,21,42,0.75) 0%,transparent 70%);top:-80px;left:-80px;animation:bb1 24s ease-in-out infinite; }
+[data-theme="dark"]  .bb2{ width:260px;height:260px;background:radial-gradient(circle,rgba(0,112,243,0.65) 0%,transparent 70%);top:28%;right:-70px;animation:bb2 30s ease-in-out infinite; }
+[data-theme="dark"]  .bb3{ width:220px;height:220px;background:radial-gradient(circle,rgba(110,50,220,0.55) 0%,transparent 70%);bottom:32%;left:8%;animation:bb3 36s ease-in-out infinite; }
+[data-theme="dark"]  .bb4{ width:200px;height:200px;background:radial-gradient(circle,rgba(168,224,99,0.45) 0%,transparent 70%);bottom:8%;right:4%;animation:bb4 26s ease-in-out infinite; }
+
+[data-theme="light"] .bb1{ width:320px;height:320px;background:radial-gradient(circle,rgba(255,90,110,0.45) 0%,transparent 70%);top:-60px;left:-60px;animation:bb1 24s ease-in-out infinite; }
+[data-theme="light"] .bb2{ width:260px;height:260px;background:radial-gradient(circle,rgba(0,140,255,0.35) 0%,transparent 70%);top:20%;right:-50px;animation:bb2 30s ease-in-out infinite; }
+[data-theme="light"] .bb3{ width:220px;height:220px;background:radial-gradient(circle,rgba(130,80,240,0.28) 0%,transparent 70%);bottom:30%;left:5%;animation:bb3 36s ease-in-out infinite; }
+[data-theme="light"] .bb4{ width:200px;height:200px;background:radial-gradient(circle,rgba(80,200,100,0.22) 0%,transparent 70%);bottom:6%;right:4%;animation:bb4 26s ease-in-out infinite; }
+
+@keyframes bb1{0%,100%{transform:translate(0,0) scale(1)}30%{transform:translate(32px,55px) scale(1.15)}65%{transform:translate(-18px,28px) scale(0.9)}}
+@keyframes bb2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-45px,35px) scale(1.12)}58%{transform:translate(22px,-42px) scale(0.93)}}
+@keyframes bb3{0%,100%{transform:translate(0,0) scale(1)}40%{transform:translate(55px,-32px) scale(1.18)}72%{transform:translate(-22px,22px) scale(0.88)}}
+@keyframes bb4{0%,100%{transform:translate(0,0) scale(1)}35%{transform:translate(-28px,-45px) scale(1.1)}68%{transform:translate(26px,22px) scale(0.92)}}
+
+/* ══════════════════════════════════════════════════
+   LIQUID GLASS — APPLE DESIGN LANGUAGE
+══════════════════════════════════════════════════ */
+
+/* Make everything behind glass transparent */
+html  { background:var(--aurora-base) !important; }
+body  { background:var(--aurora-base) !important; }
+#app  { background:transparent !important; }
+.scroll-area { background:transparent !important; }
+header{ background:transparent !important; box-shadow:none !important; }
+
+/* Glass tokens */
+[data-theme="dark"]{
+  --gl-bg:   rgba(30,30,50,0.45);
+  --gl-brd:  rgba(255,255,255,0.16);
+  --gl-hi:   rgba(255,255,255,0.20);
+  --gl-lo:   rgba(0,0,0,0.25);
+  --gl-blur: blur(32px) saturate(200%);
+  --gl-sh:   0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.3);
+  --gl-inn:  inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.18);
+}
+[data-theme="light"]{
+  --gl-bg:   rgba(255,255,255,0.52);
+  --gl-brd:  rgba(255,255,255,0.82);
+  --gl-hi:   rgba(255,255,255,0.96);
+  --gl-lo:   rgba(0,0,0,0.04);
+  --gl-blur: blur(32px) saturate(180%);
+  --gl-sh:   0 8px 32px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+  --gl-inn:  inset 0 1px 0 rgba(255,255,255,0.98), inset 0 -1px 0 rgba(0,0,0,0.04);
+}
+
+/* Glass utility */
+.glass{
+  background:var(--gl-bg) !important;
+  backdrop-filter:var(--gl-blur);
+  -webkit-backdrop-filter:var(--gl-blur);
+  border:1px solid var(--gl-brd) !important;
+  box-shadow:var(--gl-sh),var(--gl-inn) !important;
+}
+
+/* Apply glass to all the right elements */
+.vcard,
+.dl-wrap,
+.calc-banner,
+.zone-card,
+.sheet,
+header {
+  background:var(--gl-bg) !important;
+  backdrop-filter:var(--gl-blur);
+  -webkit-backdrop-filter:var(--gl-blur);
+  border:1px solid var(--gl-brd) !important;
+  box-shadow:var(--gl-sh),var(--gl-inn) !important;
+}
+
+/* Buttons — liquid glass pills */
+.adj-btn,
+.hbtn,
+.ft-edit-btn,
+.hint-arr,
+.sb-btn,
+.calc-pre {
+  background:var(--gl-bg) !important;
+  backdrop-filter:var(--gl-blur);
+  -webkit-backdrop-filter:var(--gl-blur);
+  border:1px solid var(--gl-brd) !important;
+  box-shadow:0 2px 12px rgba(0,0,0,0.25),inset 0 1px 0 var(--gl-hi) !important;
+  color:var(--txt) !important;
+  transition:background .2s,border-color .2s,transform .1s !important;
+}
+.adj-btn:hover,.hbtn:hover,.ft-edit-btn:hover,.sb-btn:hover,.calc-pre:hover{
+  background:rgba(255,255,255,0.18) !important;
+  border-color:rgba(255,255,255,0.32) !important;
+}
+[data-theme="light"] .adj-btn:hover,
+[data-theme="light"] .hbtn:hover,
+[data-theme="light"] .ft-edit-btn:hover{
+  background:rgba(255,255,255,0.82) !important;
+  border-color:rgba(255,255,255,0.98) !important;
+}
+.adj-btn:active,.hbtn:active,.adj-btn:active,.sb-btn:active{transform:scale(0.91) !important;}
+
+/* Sheet contents — glass secondary surfaces */
+.auth-btn,.sheet-close,.profile-row,.input-cancel,.calc-result{
+  background:var(--gl-bg) !important;
+  border-color:var(--gl-brd) !important;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+[data-theme="dark"]  .auth-btn,
+[data-theme="dark"]  .sheet-close,
+[data-theme="dark"]  .profile-row,
+[data-theme="dark"]  .input-cancel { background:rgba(255,255,255,0.07) !important; }
+[data-theme="light"] .auth-btn,
+[data-theme="light"] .sheet-close,
+[data-theme="light"] .profile-row,
+[data-theme="light"] .input-cancel { background:rgba(255,255,255,0.60) !important; }
+
+/* Inputs */
+.pace-field-inp,.calc-time-inp,.input-field{
+  background:rgba(255,255,255,0.07) !important;
+  border-color:rgba(255,255,255,0.16) !important;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+[data-theme="light"] .pace-field-inp,
+[data-theme="light"] .calc-time-inp,
+[data-theme="light"] .input-field{
+  background:rgba(255,255,255,0.72) !important;
+  border-color:rgba(255,255,255,0.92) !important;
+}
+
+/* Specular shine line on top of vcards */
+.vcard::after{
+  content:'';position:absolute;top:0;left:20px;right:20px;
+  height:1px;background:var(--gl-hi);border-radius:2px;
+  pointer-events:none;
+}
+
+/* Header: remove old green accent, glass handles it */
+header{ border-bottom:1px solid var(--gl-brd) !important; }
+
+/* Overlay backdrop */
+.overlay{ background:rgba(0,0,0,0.45) !important; }
+
+/* Row dividers inside glass cards */
+.dr{ border-bottom-color:rgba(255,255,255,0.07) !important; }
+[data-theme="light"] .dr { border-bottom-color:rgba(0,0,0,0.07) !important; }
+
+/* Zone card row */
+.zone-spectrum-wrap{ filter:drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+
+/* Calc banner: remove old gradient, glass handles it */
+.calc-banner::before{ display:none; }
+.calc-banner-icon{
+  background:linear-gradient(135deg,var(--red),rgba(232,21,42,0.7)) !important;
+  box-shadow:0 4px 16px rgba(232,21,42,0.45) !important;
+}
+
 /* ═══ PACE ZONE CARD ═══ */
 .zone-card{
   margin:10px 14px 0;
@@ -614,6 +780,14 @@ html { perspective: 1400px; perspective-origin: center 40%; }
 </head>
 <body>
 <div id="app">
+
+<!-- AURORA BACKGROUND -->
+<div id="bg-canvas" aria-hidden="true">
+  <div class="bb bb1"></div>
+  <div class="bb bb2"></div>
+  <div class="bb bb3"></div>
+  <div class="bb bb4"></div>
+</div>
 
 
 <header>
