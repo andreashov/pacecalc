@@ -723,6 +723,13 @@ header{ border-bottom:1px solid var(--gl-brd) !important; }
   box-shadow:0 4px 16px rgba(232,21,42,0.45) !important;
 }
 
+/* Logo blend fix for glass header + gap under header */
+[data-theme="dark"]  .logo-wrap{ background:#000000; mix-blend-mode:screen; border-radius:6px; overflow:hidden; }
+[data-theme="light"] .logo-wrap{ background:#ffffff; mix-blend-mode:multiply; border-radius:6px; overflow:hidden; }
+[data-theme="dark"]  .logo-for-dark  { mix-blend-mode:normal !important; }
+[data-theme="light"] .logo-for-light { mix-blend-mode:normal !important; }
+.scroll-area{ padding-top:12px !important; }
+
 /* ═══ PACE ZONE CARD ═══ */
 .zone-card{
   margin:10px 14px 0;
