@@ -57,18 +57,30 @@
 
 /* Fill full screen, dark bg everywhere including status bar */
 html{height:100%;overflow:hidden;background:var(--bg);transition:background .3s}
-/* Ensure meta theme-color matches on load */
 
 body{
   height:100%;
   overflow:hidden;
   display:flex;
-  flex-direction:column;
+  justify-content:center;
   background:var(--bg);
   color:var(--txt);
   font-family:'Inter',sans-serif;
   -webkit-font-smoothing:antialiased;
   transition:background .3s,color .3s;
+}
+
+/* ── APP SHELL — phone-width column, centered on desktop ── */
+#app{
+  position:relative;
+  width:100%;
+  max-width:430px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--bg);
+  transition:background .3s;
 }
 
 /* bg-layer removed — single solid bg ensures consistency */
@@ -120,7 +132,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 
 /* VALUE CARDS */
 .cards{
-  position:fixed;
+  position:absolute;
   bottom:0; left:0; right:0;
   z-index:20;
   padding:8px 12px;
@@ -188,7 +200,7 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .dr-arr{color:var(--dim2);font-size:14px}
 
 /* BOTTOM SHEETS */
-.overlay{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:100;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.overlay{display:flex;position:absolute;inset:0;background:rgba(0,0,0,.82);z-index:100;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
 .overlay.show{opacity:1;pointer-events:auto}
 .sheet{background:var(--card);border-radius:32px 32px 0 0;width:100%;max-width:430px;border:1px solid var(--brd);border-bottom:none;transition:background .3s,border-color .3s;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box}
 @keyframes up{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -296,10 +308,9 @@ header{position:relative;z-index:10;display:flex;align-items:center;justify-cont
 .sb-btn:hover{background:var(--card2);color:var(--txt);}
 .sb-btn:active{transform:scale(.91);}
 
-/* Extra space at bottom so content doesn't hide behind speed bar */
-.scroll-area{padding-bottom:100px!important;}
+/* Extra space handled by #cardSpacer via JS */
 
-.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);color:var(--txt);padding:11px 20px;border-radius:30px;border:1px solid var(--brd);font-size:14px;z-index:300;transition:all .3s;opacity:0;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px var(--shadow)}
+.toast{position:absolute;bottom:110px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--card2);color:var(--txt);padding:11px 20px;border-radius:30px;border:1px solid var(--brd);font-size:14px;z-index:300;transition:all .3s;opacity:0;pointer-events:none;white-space:nowrap;box-shadow:0 4px 16px var(--shadow)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
 /* ═══ PREMIUM ENHANCEMENTS ═══ */
@@ -549,7 +560,7 @@ html { perspective: 1400px; perspective-origin: center 40%; }
 /* ═══ MOBILE BLOCK ═══ */
 #mobile-block{
   display:none;
-  position:fixed;inset:0;z-index:99999;
+  position:absolute;inset:0;z-index:99999;
   background:var(--bg);
   flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:40px 32px;
@@ -614,7 +625,7 @@ html { perspective: 1400px; perspective-origin: center 40%; }
 </style>
 </head>
 <body>
-
+<div id="app">
 
 <!-- MOBILE BLOCK OVERLAY -->
 <div id="mobile-block">
@@ -824,6 +835,8 @@ html { perspective: 1400px; perspective-origin: center 40%; }
 
 <div class="toast" id="toast"></div>
 
+</div><!-- /#app -->
+
 <script>
 // ═══ FIREBASE ════════════════════════════════
 const firebaseConfig={apiKey:"AIzaSyBqhLLVHkHnRShvmaCwl3PY6N2D2af2xx0",authDomain:"pace-kalkulator.firebaseapp.com",projectId:"pace-kalkulator",storageBucket:"pace-kalkulator.firebasestorage.app",messagingSenderId:"473008065074",appId:"1:473008065074:web:353504dc0900a78ce7ca2b",measurementId:"G-0R21H9GR74"};
@@ -1015,7 +1028,7 @@ function spawnParticles(x, y, theme){
       animationDelay: (Math.random()*0.15)+'s',
       animationDuration: (0.6+Math.random()*0.4)+'s',
     });
-    document.body.appendChild(p);
+    (document.getElementById('app')||document.body).appendChild(p);
     setTimeout(()=>p.remove(), 1200);
   }
 }
@@ -1047,7 +1060,7 @@ function toggleTheme(){
     willChange:'clip-path,opacity',
     transform:'translateZ(0)',
   });
-  document.body.appendChild(ripple);
+  (document.getElementById('app')||document.body).appendChild(ripple);
 
   // Phase 1: dramatic expand with overshoot easing
   const expand = ripple.animate([
