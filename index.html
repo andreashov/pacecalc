@@ -1322,24 +1322,64 @@ function fmtTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=Math
 // ═══ DISPLAY ══════════════════════════════════
 function bumpAnim(el,dir){el.classList.remove('bump','bump-down');void el.offsetWidth;el.classList.add(dir>0?'bump':'bump-down');setTimeout(()=>el.classList.remove('bump','bump-down'),200);}
 
-// ═══ OLYMPIATOPPEN 5-SONERS MODELL ════════════
-// Grenser er % av terskel-pace (10K-pace). Høyere sek/km = lavere intensitet.
-// S1 ≥ T×1.20 | S2 T×1.10–1.20 | S3 T×1.03–1.10 | S4 T×0.97–1.03 | S5 < T×0.97
+// ═══ JACK DANIELS VDOT ZONE SYSTEM ════════════
+// Ref: Daniels' Running Formula (3rd ed.)
+// VDOT is calculated from a race result, then training paces
+// are derived at specific %VO2max levels using Daniels' formula.
+
 const ZONE_DEF=[
-  {id:1,color:'#94a3b8',loFac:1.25,hiFac:Infinity, name:{no:'Intensitetssone 1',en:'Intensity zone 1'}, desc:{no:'Veldig lett · Kan prate uanstrengt',en:'Very easy · Can talk freely'}},
-  {id:2,color:'#60a5fa',loFac:1.12,hiFac:1.25,     name:{no:'Intensitetssone 2',en:'Intensity zone 2'}, desc:{no:'Nokså lett · Kan si lengre setninger relativt uanstrengt',en:'Fairly easy · Can say longer sentences fairly easily'}},
-  {id:3,color:'#4ade80',loFac:1.02,hiFac:1.12,     name:{no:'Intensitetssone 3',en:'Intensity zone 3'}, desc:{no:'Behagelig anstrengende · Kan si korte setninger',en:'Comfortably hard · Can say short sentences'}},
-  {id:4,color:'#fbbf24',loFac:0.92,hiFac:1.02,     name:{no:'Intensitetssone 4',en:'Intensity zone 4'}, desc:{no:'Anstrengende · Kan si noen ord eller svært korte setninger',en:'Hard · Can say a few words or very short sentences'}},
-  {id:5,color:'#ef4444',loFac:0,   hiFac:0.92,     name:{no:'Intensitetssone 5',en:'Intensity zone 5'}, desc:{no:'Veldig anstrengende · Kan kun si et ord eller to, puster tungt',en:'Very hard · Can only say a word or two, breathing heavily'}},
+  {id:1,color:'#94a3b8', name:{no:'Intensitetssone 1',en:'Intensity zone 1'}, desc:{no:'Veldig lett · Kan prate uanstrengt',en:'Very easy · Can talk freely'},           pctLo:0,    pctHi:0.70},
+  {id:2,color:'#60a5fa', name:{no:'Intensitetssone 2',en:'Intensity zone 2'}, desc:{no:'Nokså lett · Kan si lengre setninger relativt uanstrengt',en:'Fairly easy · Can say longer sentences fairly easily'}, pctLo:0.70, pctHi:0.83},
+  {id:3,color:'#4ade80', name:{no:'Intensitetssone 3',en:'Intensity zone 3'}, desc:{no:'Behagelig anstrengende · Kan si korte setninger',en:'Comfortably hard · Can say short sentences'},               pctLo:0.83, pctHi:0.88},
+  {id:4,color:'#fbbf24', name:{no:'Intensitetssone 4',en:'Intensity zone 4'}, desc:{no:'Anstrengende · Kan si noen ord eller svært korte setninger',en:'Hard · Can say a few words or very short sentences'}, pctLo:0.88, pctHi:0.95},
+  {id:5,color:'#ef4444', name:{no:'Intensitetssone 5',en:'Intensity zone 5'}, desc:{no:'Veldig anstrengende · Kan kun si et ord eller to, puster tungt',en:'Very hard · Can only say a word or two, breathing heavily'}, pctLo:0.95, pctHi:Infinity},
 ];
 
+// Daniels' formula: %VO2max from race duration (t in minutes)
+function pctVO2fromTime(t){
+  return 0.8 + 0.1894393*Math.exp(-0.012778*t) + 0.2989558*Math.exp(-0.1932605*t);
+}
+// VO2 from velocity (v in m/min)
+function vo2fromVelocity(v){
+  return -4.60 + 0.182258*v + 0.000104*v*v;
+}
+// Velocity (m/min) from VO2 target (quadratic solve)
+function velocityFromVO2(vo2target){
+  const a=0.000104, b=0.182258, c=-(4.60+vo2target);
+  return (-b + Math.sqrt(b*b - 4*a*c)) / (2*a);
+}
+// Pace (sec/km) from %VO2max and VDOT
+function vdotToPaceSec(vdot, pct){
+  const v = velocityFromVO2(vdot * pct);
+  return Math.round(60000 / v); // sec/km
+}
+// Calculate VDOT from a race (distKm, timeSec)
+function calcVDOT(distKm, timeSec){
+  const t = timeSec / 60;
+  const v = (distKm * 1000) / t;
+  return vo2fromVelocity(v) / pctVO2fromTime(t);
+}
+
+let cachedVDOT = null;
+function getVDOT(){
+  if(!t10kSec) return null;
+  if(!cachedVDOT) cachedVDOT = calcVDOT(10, t10kSec);
+  return cachedVDOT;
+}
+
 function getZoneBounds(){
-  // Fall back to generic bounds if no 10K time set
-  const T = t10kSec ? (t10kSec / 10) : 300; // default T = 5:00/km
+  const vdot = getVDOT();
+  if(!vdot){
+    // Fallback generic bounds when no 10K time set (based on 5:00/km default)
+    return ZONE_DEF.map((z,i)=>{
+      const paces=[Infinity,420,360,310,270,0];
+      return {...z, minS:paces[i+1]||0, maxS:paces[i]};
+    });
+  }
   return ZONE_DEF.map(z=>({
     ...z,
-    minS: z.hiFac===Infinity ? Math.round(T*z.loFac) : Math.round(T*z.loFac),
-    maxS: z.hiFac===Infinity ? Infinity : Math.round(T*z.hiFac),
+    maxS: z.pctLo===0    ? Infinity : vdotToPaceSec(vdot, z.pctLo),
+    minS: z.pctHi===Infinity ? 0    : vdotToPaceSec(vdot, z.pctHi),
   }));
 }
 function getZone(s){
@@ -1360,18 +1400,18 @@ function updateZone(){
   nm.textContent=z.name[lang]||z.name.no;
   dc.textContent=z.desc[lang]||z.desc.no;
   if(!t10kSec){
-    rng.textContent=lang==='no'?'Sett 10K-tid':'Set 10K time';
+    rng.textContent=lang==='no'?'Sett 10K-tid ›':'Set 10K time ›';
     rng.style.color='var(--red)';rng.style.cursor='pointer';
     rng.onclick=()=>openSheet('userOverlay');
   } else {
     rng.style.color='';rng.style.cursor='';rng.onclick=null;
-    const lo=z.maxS===Infinity?'>'+fmtPace(z.minS):fmtPace(z.maxS);
+    const lo=z.maxS===Infinity?'> '+fmtPace(z.minS):fmtPace(z.maxS);
     const hi=z.minS===0?'< '+fmtPace(z.maxS):fmtPace(z.minS);
-    rng.textContent=(z.hiFac===Infinity?lo:(z.loFac===0?hi:lo+' – '+hi))+' /km';
+    rng.textContent=(z.maxS===Infinity?lo:(z.minS===0?hi:lo+' – '+hi))+' /km';
   }
   ZONE_DEF.forEach(zz=>{const sg=document.getElementById('zseg_'+zz.id);if(sg)sg.classList.toggle('active',zz.id===z.id);});
 }
-function save10k(v){ t10kSec=v; lsSet('t10kSec',v); if(curUser&&fbOk)saveData({t10kSec:v}); updateZone(); buildUserSheet(); }
+function save10k(v){ t10kSec=v; cachedVDOT=null; lsSet('t10kSec',v); if(curUser&&fbOk)saveData({t10kSec:v}); updateZone(); buildUserSheet(); }
 
 function updateAll(dir=0){
   document.getElementById('paceNum').textContent=fmtPace(paceSec);
