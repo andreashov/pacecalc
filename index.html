@@ -1326,11 +1326,11 @@ function bumpAnim(el,dir){el.classList.remove('bump','bump-down');void el.offset
 // Grenser er % av terskel-pace (10K-pace). Høyere sek/km = lavere intensitet.
 // S1 ≥ T×1.20 | S2 T×1.10–1.20 | S3 T×1.03–1.10 | S4 T×0.97–1.03 | S5 < T×0.97
 const ZONE_DEF=[
-  {id:1,color:'#94a3b8',loFac:1.20,hiFac:Infinity, name:{no:'Sone 1 – Regenerering',en:'Zone 1 – Recovery'},   desc:{no:'Aktiv hvile og restitusjon',en:'Active recovery'}},
-  {id:2,color:'#60a5fa',loFac:1.10,hiFac:1.20,     name:{no:'Sone 2 – Grunnlag',en:'Zone 2 – Base'},           desc:{no:'Aerob grunntrening, lav intensitet',en:'Low-intensity aerobic base'}},
-  {id:3,color:'#4ade80',loFac:1.03,hiFac:1.10,     name:{no:'Sone 3 – Utvikling',en:'Zone 3 – Development'},   desc:{no:'Moderat intensitet, tempotrening',en:'Moderate intensity, tempo'}},
-  {id:4,color:'#fbbf24',loFac:0.97,hiFac:1.03,     name:{no:'Sone 4 – Terskel',en:'Zone 4 – Threshold'},       desc:{no:'Rundt laktatterskel (≈ 10K-pace)',en:'Around lactate threshold (≈ 10K pace)'}},
-  {id:5,color:'#ef4444',loFac:0,   hiFac:0.97,     name:{no:'Sone 5 – VO₂maks',en:'Zone 5 – VO₂max'},         desc:{no:'Høy til maks intensitet',en:'High to max intensity'}},
+  {id:1,color:'#94a3b8',loFac:1.20,hiFac:Infinity, name:{no:'Intensitetssone 1',en:'Intensity zone 1'}, desc:{no:'RPE 6–9 · Svært lett, kan synge',en:'RPE 6–9 · Very easy, could sing'}},
+  {id:2,color:'#60a5fa',loFac:1.10,hiFac:1.20,     name:{no:'Intensitetssone 2',en:'Intensity zone 2'}, desc:{no:'RPE 10–12 · Lett, prater uanstrengt',en:'RPE 10–12 · Easy, talk freely'}},
+  {id:3,color:'#4ade80',loFac:1.03,hiFac:1.10,     name:{no:'Intensitetssone 3',en:'Intensity zone 3'}, desc:{no:'RPE 13–14 · Moderat, prater med anstrengelse',en:'RPE 13–14 · Moderate, talking takes effort'}},
+  {id:4,color:'#fbbf24',loFac:0.97,hiFac:1.03,     name:{no:'Intensitetssone 4',en:'Intensity zone 4'}, desc:{no:'RPE 15–16 · Hardt, vanskelig å prate',en:'RPE 15–16 · Hard, difficult to talk'}},
+  {id:5,color:'#ef4444',loFac:0,   hiFac:0.97,     name:{no:'Intensitetssone 5',en:'Intensity zone 5'}, desc:{no:'RPE 17–20 · Svært hardt, kan ikke prate',en:'RPE 17–20 · Very hard, cannot talk'}},
 ];
 
 function getZoneBounds(){
