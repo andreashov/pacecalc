@@ -1455,7 +1455,7 @@ function buildUserSheet(){
     <div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px">${t10kLabel}</div>
     <div style="font-size:11px;color:var(--dim);margin-bottom:8px">${t10kSub}</div>
     <div style="display:flex;gap:8px;align-items:center">
-      <input id="inp10k" type="text" inputmode="numeric" placeholder="${t10kPh}" value="${cur10k}"
+      <input id="inp10k" type="text" inputmode="text" placeholder="${t10kPh}" value="${cur10k}" onkeydown="if(event.key==='Enter')apply10k()"
         style="flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;
                padding:10px 14px;font-size:18px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;
                outline:none;font-variant-numeric:tabular-nums;letter-spacing:-.5px">
@@ -1603,8 +1603,9 @@ makeDraggable(document.getElementById('paceCard'),'pace',()=>paceSec,v=>setPace(
 
 
 // ═══ SHEET HELPERS ════════════════════════════
-function openUserSheet(){buildUserSheet();document.getElementById('userOverlay').classList.add('show');}
-function openDistSheet(){buildDistSheet();document.getElementById('distOverlay').classList.add('show');}
+function openSheet(id){if(id==='userOverlay')buildUserSheet();else if(id==='distOverlay')buildDistSheet();document.getElementById(id).classList.add('show');}
+function openUserSheet(){openSheet('userOverlay');}
+function openDistSheet(){openSheet('distOverlay');}
 function closeSheet(id){document.getElementById(id).classList.remove('show');}
 function overlayClick(id,e){if(e.target===document.getElementById(id))closeSheet(id);}
 
