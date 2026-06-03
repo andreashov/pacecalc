@@ -1097,6 +1097,7 @@ const DEFAULT_ENABLED=['d_400','d_1500','d_5km','d_10km','d_half','d_mar'];
 // ═══ STATE ════════════════════════════════════
 let lang='no',theme='dark',paceSec=300,kmh=12.0;
 let enabled=[...DEFAULT_ENABLED];
+let t10kSec=null; // 10K race time in seconds — anchor for zone boundaries
 
 // ═══ localStorage ═════════════════════════════
 function lsGet(k){try{const v=localStorage.getItem('pc_'+k);return v!=null?JSON.parse(v):null;}catch(e){return null;}}
@@ -1104,11 +1105,12 @@ function lsSet(k,v){try{localStorage.setItem('pc_'+k,JSON.stringify(v));}catch(e
 
 // Restore all state from localStorage FIRST (before Firebase, before DOM)
 (()=>{
-  const t=lsGet('theme');   if(t!=null)  theme=t;
-  const l=lsGet('lang');    if(l!=null)  lang=l;
-  const e=lsGet('enabled'); if(e!=null)  enabled=e;
-  const p=lsGet('paceSec'); if(p!=null)  paceSec=Number(p);
-  const k=lsGet('kmh');     if(k!=null)  kmh=Number(k);
+  const t=lsGet('theme');    if(t!=null)  theme=t;
+  const l=lsGet('lang');     if(l!=null)  lang=l;
+  const e=lsGet('enabled');  if(e!=null)  enabled=e;
+  const p=lsGet('paceSec');  if(p!=null)  paceSec=Number(p);
+  const k=lsGet('kmh');      if(k!=null)  kmh=Number(k);
+  const z=lsGet('t10kSec');  if(z!=null)  t10kSec=Number(z);
 })();
 
 // ═══ SAVE / LOAD ══════════════════════════════
@@ -1134,6 +1136,7 @@ function loadSettings(u){
     if(d.enabled !=null){ enabled=d.enabled;        lsSet('enabled', d.enabled);  changed=true; }
     if(d.paceSec !=null){ paceSec=Number(d.paceSec);lsSet('paceSec', d.paceSec);  changed=true; }
     if(d.kmh     !=null){ kmh=Number(d.kmh);        lsSet('kmh',     d.kmh);      changed=true; }
+    if(d.t10kSec !=null){ t10kSec=Number(d.t10kSec);lsSet('t10kSec',d.t10kSec);  changed=true; }
 
     if(changed){
       applyTheme(theme, false);
@@ -1319,34 +1322,56 @@ function fmtTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=Math
 // ═══ DISPLAY ══════════════════════════════════
 function bumpAnim(el,dir){el.classList.remove('bump','bump-down');void el.offsetWidth;el.classList.add(dir>0?'bump':'bump-down');setTimeout(()=>el.classList.remove('bump','bump-down'),200);}
 
-// ═══ PACE ZONES ═══════════════════════════════
-const ZONES=[
-  {id:1,color:'#94a3b8',name:{no:'Restitusjon',en:'Recovery'},   desc:{no:'Svært lett',en:'Very easy'},         minS:420, maxS:Infinity},
-  {id:2,color:'#60a5fa',name:{no:'Lett',en:'Easy'},              desc:{no:'Lett langkjøring',en:'Easy run'},    minS:360, maxS:420},
-  {id:3,color:'#4ade80',name:{no:'Aerob',en:'Aerobic'},          desc:{no:'Langkjøring',en:'Long run'},         minS:300, maxS:360},
-  {id:4,color:'#fbbf24',name:{no:'Tempo',en:'Tempo'},            desc:{no:'Komfortabelt hardt',en:'Comfortably hard'}, minS:255, maxS:300},
-  {id:5,color:'#fb923c',name:{no:'Terskel',en:'Threshold'},      desc:{no:'Laktatterskelen',en:'Lactate threshold'}, minS:220, maxS:255},
-  {id:6,color:'#ef4444',name:{no:'VO₂max',en:'VO₂max'},         desc:{no:'Maks intensitet',en:'Max intensity'},minS:0,   maxS:220},
+// ═══ OLYMPIATOPPEN 5-SONERS MODELL ════════════
+// Grenser er % av terskel-pace (10K-pace). Høyere sek/km = lavere intensitet.
+// S1 ≥ T×1.20 | S2 T×1.10–1.20 | S3 T×1.03–1.10 | S4 T×0.97–1.03 | S5 < T×0.97
+const ZONE_DEF=[
+  {id:1,color:'#94a3b8',loFac:1.20,hiFac:Infinity, name:{no:'Sone 1 – Regenerering',en:'Zone 1 – Recovery'},   desc:{no:'Aktiv hvile og restitusjon',en:'Active recovery'}},
+  {id:2,color:'#60a5fa',loFac:1.10,hiFac:1.20,     name:{no:'Sone 2 – Grunnlag',en:'Zone 2 – Base'},           desc:{no:'Aerob grunntrening, lav intensitet',en:'Low-intensity aerobic base'}},
+  {id:3,color:'#4ade80',loFac:1.03,hiFac:1.10,     name:{no:'Sone 3 – Utvikling',en:'Zone 3 – Development'},   desc:{no:'Moderat intensitet, tempotrening',en:'Moderate intensity, tempo'}},
+  {id:4,color:'#fbbf24',loFac:0.97,hiFac:1.03,     name:{no:'Sone 4 – Terskel',en:'Zone 4 – Threshold'},       desc:{no:'Rundt laktatterskel (≈ 10K-pace)',en:'Around lactate threshold (≈ 10K pace)'}},
+  {id:5,color:'#ef4444',loFac:0,   hiFac:0.97,     name:{no:'Sone 5 – VO₂maks',en:'Zone 5 – VO₂max'},         desc:{no:'Høy til maks intensitet',en:'High to max intensity'}},
 ];
-function getZone(s){return ZONES.find(z=>s>=z.minS&&(z.maxS===Infinity||s<z.maxS))||ZONES[ZONES.length-1];}
+
+function getZoneBounds(){
+  // Fall back to generic bounds if no 10K time set
+  const T = t10kSec ? (t10kSec / 10) : 300; // default T = 5:00/km
+  return ZONE_DEF.map(z=>({
+    ...z,
+    minS: z.hiFac===Infinity ? Math.round(T*z.loFac) : Math.round(T*z.loFac),
+    maxS: z.hiFac===Infinity ? Infinity : Math.round(T*z.hiFac),
+  }));
+}
+function getZone(s){
+  const zones=getZoneBounds();
+  return zones.find(z=>s>=z.minS&&(z.maxS===Infinity||s<z.maxS))||zones[zones.length-1];
+}
 function buildZoneSpectrum(){
   const w=document.getElementById('zoneSpectrum');if(!w)return;
   w.innerHTML='';
-  ZONES.forEach(z=>{const s=document.createElement('div');s.className='zone-seg';s.id='zseg_'+z.id;s.style.background=z.color;w.appendChild(s);});
+  ZONE_DEF.forEach(z=>{const s=document.createElement('div');s.className='zone-seg';s.id='zseg_'+z.id;s.style.background=z.color;w.appendChild(s);});
 }
 function updateZone(){
   const z=getZone(paceSec);
   const dot=document.getElementById('zoneDot'),nm=document.getElementById('zoneName'),
         dc=document.getElementById('zoneDesc'),rng=document.getElementById('zoneRange');
   if(!dot)return;
-  dot.style.background=z.color;dot.style.boxShadow='0 0 10px '+z.color+',0 0 4px '+z.color;
+  dot.style.background=z.color;dot.style.boxShadow='0 0 12px '+z.color+',0 0 4px '+z.color;
   nm.textContent=z.name[lang]||z.name.no;
   dc.textContent=z.desc[lang]||z.desc.no;
-  const lo=z.maxS===Infinity?'>'+fmtPace(z.minS):fmtPace(z.maxS);
-  const hi=z.minS===0?'<'+fmtPace(z.maxS):fmtPace(z.minS);
-  rng.textContent=(z.minS===0?hi:(z.maxS===Infinity?lo:lo+' – '+hi))+' /km';
-  ZONES.forEach(zz=>{const sg=document.getElementById('zseg_'+zz.id);if(sg)sg.classList.toggle('active',zz.id===z.id);});
+  if(!t10kSec){
+    rng.textContent=lang==='no'?'Sett 10K-tid':'Set 10K time';
+    rng.style.color='var(--red)';rng.style.cursor='pointer';
+    rng.onclick=()=>openSheet('userOverlay');
+  } else {
+    rng.style.color='';rng.style.cursor='';rng.onclick=null;
+    const lo=z.maxS===Infinity?'>'+fmtPace(z.minS):fmtPace(z.maxS);
+    const hi=z.minS===0?'< '+fmtPace(z.maxS):fmtPace(z.minS);
+    rng.textContent=(z.hiFac===Infinity?lo:(z.loFac===0?hi:lo+' – '+hi))+' /km';
+  }
+  ZONE_DEF.forEach(zz=>{const sg=document.getElementById('zseg_'+zz.id);if(sg)sg.classList.toggle('active',zz.id===z.id);});
 }
+function save10k(v){ t10kSec=v; lsSet('t10kSec',v); if(curUser&&fbOk)saveData({t10kSec:v}); updateZone(); buildUserSheet(); }
 
 function updateAll(dir=0){
   document.getElementById('paceNum').textContent=fmtPace(paceSec);
@@ -1420,18 +1445,49 @@ function buildUserSheet(){
   const body=document.getElementById('userSheetBody');
   if(!hd||!body)return;
   const t=T();
+  // 10K input block (shared between logged-in and logged-out)
+  const cur10k = t10kSec ? fmtTime(t10kSec) : '';
+  const t10kLabel = lang==='no' ? '10K-tid for soner' : '10K time for zones';
+  const t10kSub   = lang==='no' ? 'Olympiatoppens soneskala tilpasses din terskel-pace' : 'Olympiatoppen zones adapt to your threshold pace';
+  const t10kPh    = lang==='no' ? 'f.eks. 45:00' : 'e.g. 45:00';
+  const t10kSave  = lang==='no' ? 'Lagre' : 'Save';
+  const t10kRow=`<div style="margin-bottom:14px">
+    <div style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px">${t10kLabel}</div>
+    <div style="font-size:11px;color:var(--dim);margin-bottom:8px">${t10kSub}</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input id="inp10k" type="text" inputmode="numeric" placeholder="${t10kPh}" value="${cur10k}"
+        style="flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;
+               padding:10px 14px;font-size:18px;font-weight:700;color:var(--txt);font-family:'Inter',sans-serif;
+               outline:none;font-variant-numeric:tabular-nums;letter-spacing:-.5px">
+      <button onclick="apply10k()" style="padding:10px 16px;border-radius:12px;border:none;background:var(--blue);
+              color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">${t10kSave}</button>
+    </div>
+    ${t10kSec?`<div style="font-size:11px;color:var(--dim);margin-top:6px">${lang==='no'?'Terskel-pace':'Threshold pace'}: <b style="color:var(--txt)">${fmtPace(Math.round(t10kSec/10))}/km</b></div>`:''}
+  </div>`;
   if(curUser){
     hd.innerHTML=`<div class="handle"></div><div class="profile-row"><div class="pav">${curUser.photoURL?`<img src="${curUser.photoURL}">`:( curUser.displayName||'?')[0].toUpperCase()}</div><div><div class="pn">${curUser.displayName||'User'}</div><div class="pe">${curUser.email||''}</div></div></div>`;
-    body.innerHTML=`<button class="signout" onclick="doSignOut()">${t.signOut}</button><button class="sheet-close" onclick="closeSheet('userOverlay')" style="margin-top:6px">${t.close}</button>`;
+    body.innerHTML=t10kRow+`<button class="signout" onclick="doSignOut()">${t.signOut}</button><button class="sheet-close" onclick="closeSheet('userOverlay')" style="margin-top:6px">${t.close}</button>`;
   } else {
     hd.innerHTML=`<div class="handle"></div><div class="sheet-title">${t.signIn}</div><div class="sheet-sub">${t.signInSub}</div>`;
-    body.innerHTML=`<button class="auth-btn" onclick="signInGoogle()"><svg viewBox="0 0 24 24" width="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>${t.continueGoogle}</button><button class="sheet-close" onclick="closeSheet('userOverlay')">${t.cancel}</button>`;
+    body.innerHTML=t10kRow+`<button class="auth-btn" onclick="signInGoogle()"><svg viewBox="0 0 24 24" width="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>${t.continueGoogle}</button><button class="sheet-close" onclick="closeSheet('userOverlay')">${t.cancel}</button>`;
   }
   // Update user button icon
   const btn=document.getElementById('userBtn');
   if(!btn)return;
   if(curUser){btn.innerHTML=curUser.photoURL?`<img src="${curUser.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span style="font-size:12px;font-weight:700;color:var(--txt)">${(curUser.displayName||'?')[0].toUpperCase()}</span>`;btn.style.borderColor='var(--dim)';}
   else{btn.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>`;btn.style.borderColor='';}
+}
+
+function apply10k(){
+  const raw=(document.getElementById('inp10k')||{}).value||'';
+  // Accept mm:ss or h:mm:ss
+  const parts=raw.trim().split(':').map(Number);
+  let secs=0;
+  if(parts.length===2&&!isNaN(parts[0])&&!isNaN(parts[1])){secs=parts[0]*60+parts[1];}
+  else if(parts.length===3&&!isNaN(parts[0])&&!isNaN(parts[1])&&!isNaN(parts[2])){secs=parts[0]*3600+parts[1]*60+parts[2];}
+  if(secs<600||secs>7200){showToast(lang==='no'?'Ugyldig tid (10–120 min)':'Invalid time (10–120 min)');return;}
+  save10k(secs);
+  showToast(lang==='no'?`✓ Terskel-pace: ${fmtPace(Math.round(secs/10))}/km`:`✓ Threshold pace: ${fmtPace(Math.round(secs/10))}/km`);
 }
 
 // ═══ TAP → INPUT MODAL ════════════════════════
