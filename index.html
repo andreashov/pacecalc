@@ -1319,6 +1319,35 @@ function fmtTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=Math
 // ═══ DISPLAY ══════════════════════════════════
 function bumpAnim(el,dir){el.classList.remove('bump','bump-down');void el.offsetWidth;el.classList.add(dir>0?'bump':'bump-down');setTimeout(()=>el.classList.remove('bump','bump-down'),200);}
 
+// ═══ PACE ZONES ═══════════════════════════════
+const ZONES=[
+  {id:1,color:'#94a3b8',name:{no:'Restitusjon',en:'Recovery'},   desc:{no:'Svært lett',en:'Very easy'},         minS:420, maxS:Infinity},
+  {id:2,color:'#60a5fa',name:{no:'Lett',en:'Easy'},              desc:{no:'Lett langkjøring',en:'Easy run'},    minS:360, maxS:420},
+  {id:3,color:'#4ade80',name:{no:'Aerob',en:'Aerobic'},          desc:{no:'Langkjøring',en:'Long run'},         minS:300, maxS:360},
+  {id:4,color:'#fbbf24',name:{no:'Tempo',en:'Tempo'},            desc:{no:'Komfortabelt hardt',en:'Comfortably hard'}, minS:255, maxS:300},
+  {id:5,color:'#fb923c',name:{no:'Terskel',en:'Threshold'},      desc:{no:'Laktatterskelen',en:'Lactate threshold'}, minS:220, maxS:255},
+  {id:6,color:'#ef4444',name:{no:'VO₂max',en:'VO₂max'},         desc:{no:'Maks intensitet',en:'Max intensity'},minS:0,   maxS:220},
+];
+function getZone(s){return ZONES.find(z=>s>=z.minS&&(z.maxS===Infinity||s<z.maxS))||ZONES[ZONES.length-1];}
+function buildZoneSpectrum(){
+  const w=document.getElementById('zoneSpectrum');if(!w)return;
+  w.innerHTML='';
+  ZONES.forEach(z=>{const s=document.createElement('div');s.className='zone-seg';s.id='zseg_'+z.id;s.style.background=z.color;w.appendChild(s);});
+}
+function updateZone(){
+  const z=getZone(paceSec);
+  const dot=document.getElementById('zoneDot'),nm=document.getElementById('zoneName'),
+        dc=document.getElementById('zoneDesc'),rng=document.getElementById('zoneRange');
+  if(!dot)return;
+  dot.style.background=z.color;dot.style.boxShadow='0 0 10px '+z.color+',0 0 4px '+z.color;
+  nm.textContent=z.name[lang]||z.name.no;
+  dc.textContent=z.desc[lang]||z.desc.no;
+  const lo=z.maxS===Infinity?'>'+fmtPace(z.minS):fmtPace(z.maxS);
+  const hi=z.minS===0?'<'+fmtPace(z.maxS):fmtPace(z.minS);
+  rng.textContent=(z.minS===0?hi:(z.maxS===Infinity?lo:lo+' – '+hi))+' /km';
+  ZONES.forEach(zz=>{const sg=document.getElementById('zseg_'+zz.id);if(sg)sg.classList.toggle('active',zz.id===z.id);});
+}
+
 function updateAll(dir=0){
   document.getElementById('paceNum').textContent=fmtPace(paceSec);
   const kd=document.getElementById('kmhDisplay');
@@ -1330,6 +1359,7 @@ function updateAll(dir=0){
   const pp=(paceSec-PACE_MIN)/(PACE_MAX-PACE_MIN);
   document.getElementById('paceBar').style.width=(1-pp)*100+'%';
   ALL_DISTS.forEach(d=>{const el=document.getElementById('t_'+d.id);if(el)el.textContent=fmtTime(d.km*paceSec);});
+  updateZone();
 }
 
 function setPace(s,anim=1){const prev=paceSec;paceSec=Math.max(PACE_MIN,Math.min(PACE_MAX,Math.round(s)));kmh=Math.round((3600/paceSec)*10)/10;kmh=Math.max(KMH_MIN,Math.min(KMH_MAX,kmh));updateAll(anim?(paceSec<prev?1:-1):0);scheduleSave();}
@@ -1679,9 +1709,9 @@ applyTheme = function(){ _origApplyTheme.apply(this,arguments); setTimeout(updat
 
 
 // ═══ INIT ═════════════════════════════════════
-// Apply all restored state to DOM
 applyTheme(theme,false);
-applyLang(lang,false);   // also calls buildDistList + buildUserSheet
+applyLang(lang,false);
+buildZoneSpectrum();
 setPace(paceSec,false);
 </script>
 </body>
